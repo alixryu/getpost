@@ -6,14 +6,30 @@ Available for forking and expanding.
 A flask project, small or large, should be built with the following:
 * pip
 * virtualenv
+* nose
 * pep8/flake8
-* sqlalchemy (if using a DBMS)
 * blueprint
 * sphinx
+
+Based on additional needs, a flask project should have:
+* sqlalchemy (if using a DBMS)
 
 ### pip/virtualenv
 * only sudo install virtualenv
 * requrements.txt
+
+install libraries for project
+``` shell
+pip install -r requirements.txt
+```
+update requirements.txt
+``` shell
+pip freeze > requirements.txt
+```
+
+## nose
+* unit testing for everyone
+* [nose documentation](https://nose.readthedocs.org/en/latest/)
 
 ### flake8
 * combination of PyFlakes, pep8, and McCabe
@@ -26,6 +42,11 @@ A flask project, small or large, should be built with the following:
 
 ### sphinx
 * documentation for your application
+
+## Project Guideline
+*   master : minimum : static web page (flask, nose, flake8, blueprint, sphinx)
+|\
+| * sqler : database : basic dynamic server (sqlalchemy)
 
 ---
 ## About the project title
