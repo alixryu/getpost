@@ -34,19 +34,19 @@ pip freeze > requirements.txt
 ### flake8
 * combination of PyFlakes, pep8, and McCabe
 
-### sqlalchemy
-* THE Object Relational Mapper of choice
-
 ### blueprint
 * fast modularizing
 
 ### sphinx
 * documentation for your application
 
+### sqlalchemy
+* THE Object Relational Mapper of choice
+
 ## Project Guideline
-*   master : minimum : static web page (flask, nose, flake8, blueprint, sphinx)
-|\
-| * sqler : database : basic dynamic server (sqlalchemy)
+*   master : minimum : static web page (flask, nose, flake8, blueprint, sphinx)  
+|\  
+| * alchemist : database : basic dynamic server (sqlalchemy)  
 
 ---
 ## About the project title
