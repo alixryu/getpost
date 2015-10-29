@@ -1,9 +1,11 @@
+from config import DevConfig
 from flask import Flask, Blueprint
 
 
 lobby = Blueprint('lobby', __name__, url_prefix='/lobby')
 
 app = Flask(__name__)
+app.config.from_object(DevConfig)
 
 
 @app.route('/')
@@ -20,4 +22,4 @@ app.register_blueprint(lobby)
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
