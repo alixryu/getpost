@@ -1,5 +1,6 @@
-from config import DevConfig
 from flask import Flask, Blueprint
+
+from config import DevConfig
 
 
 lobby = Blueprint('lobby', __name__, url_prefix='/lobby')

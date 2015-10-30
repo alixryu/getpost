@@ -44,7 +44,7 @@ pip freeze > requirements.txt
 * THE Object Relational Mapper of choice
 
 ## Project Guideline
-*   master : minimum : static web page (flask, nose, flake8, blueprint, sphinx)  
+\*   master : minimum : static web page (flask, nose, flake8, blueprint, sphinx)  
 |\  
 | * alchemist : database : basic dynamic server (sqlalchemy)  
 
