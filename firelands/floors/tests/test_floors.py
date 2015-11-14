@@ -1,8 +1,8 @@
 from nose import with_setup
 from nose.tools import eq_
 
-from firelands import app
-from firelands.tests.test_firelands import setup_func, teardown_func
+from config import TestConfig
+from tests.test_firelands import app, setup_func, teardown_func
 
 
 @with_setup(setup=setup_func, teardown=teardown_func)

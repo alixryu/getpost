@@ -8,3 +8,7 @@ class ProdConfig(Config):
 
 class DevConfig(Config):
     DEBUG = True
+
+
+class TestConfig(Config):
+    DEBUG = True

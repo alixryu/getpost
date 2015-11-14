@@ -1,7 +1,11 @@
 from nose import with_setup
 from nose.tools import eq_
 
-from firelands import app
+from firelands.config import TestConfig
+from firelands import create_app
+
+
+app = create_app(TestConfig)
 
 
 def setup_func():
