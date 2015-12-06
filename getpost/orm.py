@@ -1,4 +1,4 @@
-""":mod:`firelands.orm` --- object relational mapper module of firelands
+""":mod:`getpost.orm` --- object relational mapper module of getpost
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 from sqlalchemy import create_engine, MetaData

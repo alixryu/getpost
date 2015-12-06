@@ -1,8 +1,8 @@
 from nose import with_setup
 from nose.tools import eq_
 
-from firelands.config import TestConfig
-from firelands import create_app
+from getpost.config import TestConfig
+from getpost import create_app
 
 
 app = create_app(TestConfig)

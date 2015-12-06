@@ -1,3 +1,3 @@
-""":mod:`firelands.floors` --- Controller module of firelands
+""":mod:`getpost.desk` --- Controller module of getpost
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """

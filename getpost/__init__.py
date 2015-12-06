@@ -1,7 +1,9 @@
 from flask import Flask
 
 from config import DevConfig
-from floors.lobby import lobby_blueprint
+from desk.owls import owls_blueprint
+from desk.parcels import parcels_blueprint
+from desk.wizards import wizards_blueprint
 
 
 def create_app(config_obj):
@@ -12,7 +14,9 @@ def create_app(config_obj):
     def index():
         return '<h1>What the brangan.</h1>'
 
-    app.register_blueprint(lobby_blueprint)
+    app.register_blueprint(owls_blueprint)
+    app.register_blueprint(parcels_blueprint)
+    app.register_blueprint(wizards_blueprint)
 
     return app
 
