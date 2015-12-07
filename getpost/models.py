@@ -29,19 +29,19 @@ class Notification(Base):
     send_count = Column(DateTime)
 
 
-class User(Base):
-    __tablename__ = 'user'
+class Account(Base):
+    __tablename__ = 'account'
 
     id = Column(Integer, primary_key=True)
     email_address = Column(String)
     password = Column(String)
-    role = Column(Enum('student', 'employee', name='user_type'))
+    role = Column(Enum('student', 'employee', name='account_type'))
 
 
 class Employee(Base):
     __tablename__ = 'employee'
 
-    id = Column(Integer, ForeignKey('user.id'), primary_key=True)
+    id = Column(Integer, ForeignKey('account.id'), primary_key=True)
     first_name = Column(String)
     last_name = Column(String)
 
@@ -49,7 +49,7 @@ class Employee(Base):
 class Student(Base):
     __tablename__ = 'student'
 
-    id = Column(Integer, ForeignKey('user.id'), primary_key=True)
+    id = Column(Integer, ForeignKey('account.id'), primary_key=True)
     first_name = Column(String)
     last_name = Column(String)
     ocmr = Column(Integer)
