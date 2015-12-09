@@ -26,7 +26,7 @@ def create_app(config_obj):
     @app.errorhandler(404)
     def not_found(error):
         desc = 'This page does not exist.'
-        return render_template('voldemort.html', status=404, description=desc), 500
+        return render_template('voldemort.html', status=404, description=desc), 404
 
     return app
 
