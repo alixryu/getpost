@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory, render_template
 
 from config import DevConfig
 from desk.owls import owls_blueprint
@@ -12,7 +12,15 @@ def create_app(config_obj):
 
     @app.route('/')
     def index():
-        return '<h1>What the brangan.</h1>'
+        return render_template('template.html')
+
+    @app.route('/css/<path:path>')
+    def sendcss(path):
+        return send_from_directory('styles', path)
+
+    @app.route('/js/<path:path>')
+    def sendjs(path):
+        return send_from_directory('scripts', path)
 
     app.register_blueprint(owls_blueprint)
     app.register_blueprint(parcels_blueprint)

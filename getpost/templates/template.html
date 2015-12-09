@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+        <link rel="stylesheet" href="/css/template.css" />
+        <title>GetPost{% block title %}{% endblock %}</title>
+    {% endblock %}
+</head>
+<body>
+    <div class="header">
+        {% block header %}
+            <span class="headertext">GetPost</span>
+        {% endblock %}
+    </div>
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+    <div class="footer">
+        {% block footer %}
+            <span class="footertext">GetPost - by Chris Egerton and helpful assistants</span>
+        {% endblock %}
+    </div>
+</body>
+</html>
