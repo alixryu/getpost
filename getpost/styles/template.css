@@ -1,0 +1,38 @@
+body {
+    margin: 0;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    background-color: red;
+    width: 100%;
+    height: 100px;
+    line-height: 90px;
+    text-align: center;
+}
+
+.headertext {
+    color: white;
+    font-weight: bold;
+    font-family: Helvetica, sans-serif;
+    font-size: 24pt;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+}
+
+.footer {
+    position: fixed;
+    bottom: 20px;
+    text-align: center;
+    width: 100%;
+}
+
+.footertext {
+    font-style: normal;
+    font-family: Helvetica, sans-serif;
+    font-size: 12pt;
+    font-weight: bold;
+    color: red;
+}
