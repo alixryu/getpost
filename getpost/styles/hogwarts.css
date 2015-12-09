@@ -7,10 +7,15 @@
 .links {
     padding-top: 60px;
     text-align: center;
+    list-style-type: none;
     font-family: Helvetica, sans-serif;
 }
 
 .links a {
     font-size: 60px;
     color: #91002E;
+}
+
+.links li {
+    padding-top: 10px;
 }
