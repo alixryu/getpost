@@ -12,7 +12,12 @@
 <body>
     <div class="header">
         {% block header %}
-            <a href="/"><span class="headertext">GetPost</span></a>
+            <span class="headertext"><a href="/">GetPost</a></span>
+            {% if not logged_in: %}
+                <span class="login"><a href="/login">Log in</a> | <a href="/signup">Sign up</a></span>
+            {% else: %}
+                <span class="login">Welcome back!</span>
+            {% endif %}
         {% endblock %}
     </div>
     <div class="content">
