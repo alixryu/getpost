@@ -3,13 +3,14 @@ from flask import Blueprint, render_template, send_from_directory
 
 hogwarts_blueprint = Blueprint('hogwarts', __name__, url_prefix='')
 
-css_specials = {'template.css': 'maraudersmap.css'}
+css_specials = {'template.css': 'maraudersmap.css',
+                'home.css': 'hogwarts.css'}
 js_specials = {}
 
 
 @hogwarts_blueprint.route('/')
 def hogwargs_index():
-    return render_template('maraudersmap.html')
+    return render_template('hogwarts.html')
 
 @hogwarts_blueprint.route('/css/<path:path>')
 def send_css(path):

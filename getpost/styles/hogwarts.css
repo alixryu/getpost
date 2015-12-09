@@ -1,0 +1,16 @@
+.mission {
+    padding: 30px 20px 0 20px;
+    color: #330000;
+    font-size: 20px;
+}
+
+.links {
+    padding-top: 60px;
+    text-align: center;
+    font-family: Helvetica, sans-serif;
+}
+
+.links a {
+    font-size: 60px;
+    color: #91002E;
+}
