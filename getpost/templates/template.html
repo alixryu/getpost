@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% block head %}
+    <title>GetPost | {% block title %}Home{% endblock %}</title>
+    {% block styles %}
         <link rel="stylesheet" href="/css/template.css" />
-        <title>GetPost{% block title %}{% endblock %}</title>
+    {% endblock %}
+    {% block scripts %}
     {% endblock %}
 </head>
 <body>
@@ -17,7 +19,7 @@
     </div>
     <div class="footer">
         {% block footer %}
-            <span class="footertext">GetPost - by Chris Egerton and helpful assistants</span>
+            <span class="footertext">GetPost - bringing the Oberlin mailroom to you!</span>
         {% endblock %}
     </div>
 </body>
