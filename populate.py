@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """:script:`getpost.database.populate` --- script for populating database
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
