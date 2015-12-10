@@ -8,6 +8,7 @@ boats_blueprint = Blueprint('boats', __name__, url_prefix='/signup')
 def boats_index():
     return render_template('boats.html')
 
+
 @boats_blueprint.route('/new', methods={'POST'})
 def boats_new():
     return redirect('/', 303)
