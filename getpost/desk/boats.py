@@ -33,9 +33,8 @@ def activate_student(form):
     if account_rows.count() == 1:
         account = account_rows.first()
         if not account.verified and account.role == 'student':
-            student_rows = Session.query(Student).get(account.id)
-            if student_rows.count() == 1:
-                student = student_rows.first()
+            student = Session.query(Student).get(account.id)
+            if student:
                 password_hash = hashpw(bytes(password, 'ASCII'), gensalt(SALT_ROUNDS))
                 account_rows.update({'password': password_hash, 'verified': True})
                 Session.commit()
@@ -43,7 +42,7 @@ def activate_student(form):
                 session['role'] = 'student'
                 session['first_name'] = student.first_name
                 session['last_name'] = student.last_name
-                session['email'] = student.email_address
+                session['email'] = account.email_address
                 return redirect('/', 303)
     return redirect('/signup', 303)
 
