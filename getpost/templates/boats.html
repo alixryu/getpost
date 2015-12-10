@@ -23,22 +23,22 @@
             <li id="email">
                 Email Address (must be an oberlin.edu address):
                 <br />
-                <input type="email" name="email" required />
+                <input type="email" name="email" pattern="^[a-zA-Z0-9]+@oberlin.edu$" required />
             </li>
             <li id="tnum">
-                T number (does not need to begin with 'T'):
+                T number (required for students, does not need to begin with 'T'):
                 <br />
-                <input type="text" name="tnum" required />
+                <input type="text" name="tnum" pattern="^T?[0-9]{8}$" required />
             </li>
             <li id="passone">
                 Password (must be at least six characters long):
                 <br />
-                <input type="password" name="passone" required />
+                <input type="password" name="passone" pattern=".{6,}" required />
             </li>
             <li id="passtwo">
                 Confirm Password:
                 <br />
-                <input type="password" name="passtwo" required />
+                <input type="password" name="passtwo" pattern=".{6,}" required />
             </li>
             <li>
                 Are you a student or employee?

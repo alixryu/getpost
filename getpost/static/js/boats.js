@@ -10,14 +10,14 @@ function roleChange() {
 
 function validateEmail() {
   var email = $('#email [name="email"]').val();
-  if (email.match(/^[a-zA-Z0-9.]+@oberlin.edu$/)) {
+  if (email.match(/^[a-zA-Z0-9]+@oberlin.edu$/)) {
     return '';
   } else {
     if (email === '') {
       return 'An email address is required in order to sign up.\n';
-    } else if (!email.match(/^[a-zA-Z.]+@/)) {
-      return 'Invalid email address: only letters, digits, and the "." ' +
-        'character may precede the "@" symbol.\n';
+    } else if (!email.match(/^[a-zA-Z0-9]+@/)) {
+      return 'Invalid email address: only letters and digits may precede the ' +
+      '"@" symbol.\n';
     } else if (!email.match(/@oberlin.edu$/)) {
       return 'Invalid email address: must end in "@oberlin.edu".\n';
     } else {
