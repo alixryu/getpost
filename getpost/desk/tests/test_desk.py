@@ -1,7 +1,6 @@
 from nose import with_setup
 from nose.tools import eq_
 
-from config import TestConfig
 from tests.test_getpost import app, setup_func, teardown_func
 
 
