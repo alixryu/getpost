@@ -4,18 +4,18 @@
     font-size: 20px;
 }
 
-.links {
+.linkslist {
     padding-top: 60px;
     text-align: center;
     list-style-type: none;
     font-family: Helvetica, sans-serif;
 }
 
-.links a {
+.linkslist a {
     font-size: 60px;
     color: #91002E;
 }
 
-.links li {
+.linkslist li {
     padding-top: 10px;
 }

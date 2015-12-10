@@ -4,8 +4,9 @@ from flask import Blueprint, render_template, send_from_directory
 hogwarts_blueprint = Blueprint('hogwarts', __name__, url_prefix='')
 
 css_specials = {'template.css': 'maraudersmap.css',
-                'home.css': 'hogwarts.css'}
-js_specials = {}
+                'home.css': 'hogwarts.css',
+                'signup.css': 'boats.css'}
+js_specials = {'signup.js': 'boats.js'}
 
 
 @hogwarts_blueprint.route('/')

@@ -16,7 +16,7 @@
             {% if not logged_in: %}
                 <span class="login"><a href="/login">Log in</a> | <a href="/signup">Sign up</a></span>
             {% else: %}
-                <span class="login">Welcome back!</span>
+                <span class="login">Welcome back! | <a href="/logout">Log out</a></span>
             {% endif %}
         {% endblock %}
     </div>

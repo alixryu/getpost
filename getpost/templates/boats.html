@@ -4,6 +4,49 @@
     Sign up
 {% endblock %}
 
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="/css/signup.css" />
+{% endblock %}
+
+
+{% block scripts %}
+    {{ super() }}
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="/js/signup.js"></script>
+{% endblock %}
+
 {% block content %}
     <h1>Welcome to the Sign Up Page.</h1>
+    <form action="new" method="POST" class="inputform" id="signupform">
+        <ul class="inputlist">
+            <li id="email">
+                Email Address (must be an oberlin.edu address):
+                <br />
+                <input type="email" name="email" required />
+            </li>
+            <li id="tnum">
+                T number (does not need to begin with 'T'):
+                <br />
+                <input type="text" name="tnum" required />
+            </li>
+            <li id="passone">
+                Password (must be at least six characters long):
+                <br />
+                <input type="password" name="passone" required />
+            </li>
+            <li id="passtwo">
+                Confirm Password:
+                <br />
+                <input type="password" name="passtwo" required />
+            </li>
+            <li>
+                Are you a student or employee?
+                <br />
+                <label><input type="radio" name="role" value="student" checked />Student </label>
+                <label><input type="radio" name="role" value="employee" />Employee</label>
+            </li>
+        </ul>
+        <input type="submit" value="Sign up!" />
+    </form>
 {% endblock %}
