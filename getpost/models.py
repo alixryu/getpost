@@ -1,7 +1,7 @@
 """:mod:`getpost.models` --- model module of getpost
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
-from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, String
+from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, String, Boolean
 
 from .orm import Base
 
@@ -36,6 +36,7 @@ class Account(Base):
     email_address = Column(String)
     password = Column(String)
     role = Column(Enum('student', 'employee', name='account_type'))
+    verified = Column(Boolean)
 
 
 class Employee(Base):
