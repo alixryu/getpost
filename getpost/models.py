@@ -3,7 +3,7 @@
 """
 from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, String
 
-from orm import Base
+from .orm import Base
 
 
 class Package(Base):
@@ -52,5 +52,6 @@ class Student(Base):
     id = Column(Integer, ForeignKey('account.id'), primary_key=True)
     first_name = Column(String)
     last_name = Column(String)
-    ocmr = Column(Integer)
+    alternative_name = Column(String)
+    ocmr = Column(String)
     t_number = Column(Integer)
