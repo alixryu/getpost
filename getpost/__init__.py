@@ -1,14 +1,11 @@
-#!/usr/bin/env python3
+from flask import Flask
 
-from flask import Flask, send_from_directory, render_template
-
-from config import DevConfig
-from desk.hogwarts import hogwarts_blueprint
-from desk.boats import boats_blueprint
-from desk.carriages import carriages_blueprint
-from desk.owls import owls_blueprint
-from desk.parcels import parcels_blueprint
-from desk.wizards import wizards_blueprint
+from .desk.hogwarts import hogwarts_blueprint
+from .desk.boats import boats_blueprint
+from .desk.carriages import carriages_blueprint
+from .desk.owls import owls_blueprint
+from .desk.parcels import parcels_blueprint
+from .desk.wizards import wizards_blueprint
 
 
 def create_app(config_obj):
@@ -22,22 +19,4 @@ def create_app(config_obj):
     app.register_blueprint(parcels_blueprint)
     app.register_blueprint(wizards_blueprint)
 
-    @app.errorhandler(500)
-    def internal(error):
-        desc = 'Uh oh! Something went wrong.'
-        return render_template('voldemort.html', status=500, description=desc), 500
-
-    @app.errorhandler(404)
-    def not_found(error):
-        desc = 'This page does not exist.'
-        return render_template('voldemort.html', status=404, description=desc), 404
-
     return app
-
-
-def main():
-    app = create_app(DevConfig)
-    app.run()
-
-if __name__ == '__main__':
-    main()
