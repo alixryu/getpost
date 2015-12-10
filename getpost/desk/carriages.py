@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, session, redirect, request
 
 from bcrypt import hashpw, gensalt
 
-from getpost.models import Account
+from getpost.models import Account, Student
 from getpost.orm import Session
 
 
@@ -22,15 +22,23 @@ def carriages_in():
 
 def validate_login(form):
     email, password = form['email'], form['password']
-    account_rows = Session.query(Account.password).filter(Account.email_address == email)
+    account_rows = Session.query(Account).filter(Account.email_address == email)
     if account_rows.count() == 1:
         account = account_rows.first()
-        if account.password == hashpw(bytes(password, 'ASCII'), account.password):
+        if account.password == hashpw(bytes(password, 'ASCII'), account.password) and account.verified:
             session['logged_in'] = True
+            if account.role == 'student':
+                student = Session.query(Student).get(account.id)
+                if student:
+                    session['role'] = 'student'
+                    session['first_name'] = student.first_name
+                    session['last_name'] = student.last_name
+                    session['email'] = account.email_address
             return redirect('/', 303)
     return redirect('/auth', 303)
 
 @carriages_blueprint.route('/out')
 def carriages_out():
-    session.pop('logged_in', None)
+    for key in {'logged_in', 'role', 'first_name', 'last_name', 'email'}:
+        session.pop(key, None)
     return redirect('/', 303)
