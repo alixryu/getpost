@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GetPost | {% block title %}Home{% endblock %}</title>
+    {% block styles %}
+        <link rel="stylesheet" href="/css/template.css" />
+    {% endblock %}
+    {% block scripts %}
+    {% endblock %}
+</head>
+<body>
+    <div class="header">
+        {% block header %}
+            <span class="headertext"><a href="/">GetPost</a></span>
+            {% if not logged_in: %}
+                <span class="login"><a href="/login">Log in</a> | <a href="/signup">Sign up</a></span>
+            {% else: %}
+                <span class="login">Welcome back! | <a href="/logout">Log out</a></span>
+            {% endif %}
+        {% endblock %}
+    </div>
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+    <div class="footer">
+        {% block footer %}
+            <span class="footertext">GetPost - bringing the Oberlin mailroom to you.</span>
+        {% endblock %}
+    </div>
+</body>
+</html>

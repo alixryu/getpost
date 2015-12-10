@@ -1,0 +1,16 @@
+{% extends "maraudersmap.html" %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="/css/voldemort.css" />
+{% endblock %}
+
+{% block title %}
+    Error ({{ status }})
+{% endblock %}
+
+{% block content %}
+    <div class="error">
+        <span class="errortext">{{ description }}</span>
+    </div>
+{% endblock %}

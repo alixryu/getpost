@@ -1,0 +1,21 @@
+.mission {
+    padding: 30px 20px 0 20px;
+    color: #330000;
+    font-size: 20px;
+}
+
+.linkslist {
+    padding-top: 60px;
+    text-align: center;
+    list-style-type: none;
+    font-family: Helvetica, sans-serif;
+}
+
+.linkslist a {
+    font-size: 60px;
+    color: #91002E;
+}
+
+.linkslist li {
+    padding-top: 10px;
+}

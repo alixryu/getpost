@@ -1,11 +1,11 @@
 """:mod:`getpost.orm` --- object relational mapper module of getpost
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
 
-from config import DevConfig as config
+from .config import DevConfig as config
 
 
 class ReprBase(object):

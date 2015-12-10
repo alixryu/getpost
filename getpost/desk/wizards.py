@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, render_template
 
 
 wizards_blueprint = Blueprint('wizards', __name__, url_prefix='/students')
@@ -6,4 +6,4 @@ wizards_blueprint = Blueprint('wizards', __name__, url_prefix='/students')
 
 @wizards_blueprint.route('/')
 def wizards_index():
-    return '<h1>Welcome to the Student Search Page.</h1>'
+    return render_template('wizards.html')
