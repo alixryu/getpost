@@ -1,0 +1,27 @@
+h1 {
+    text-align: center;
+}
+
+.inputform {
+    padding: 20px 0;
+    font-family: Helvetica, sans-serif;
+    font-size: 13px;
+    color: #91002E;
+    width: 300px;
+    margin: 0 auto;
+}
+
+.inputform input[type="email"], input[type="password"] {
+    width: 300px;
+    margin-top: 1px;
+}
+
+.inputlist {
+    list-style-type: none;
+    padding: 0;
+}
+
+
+.inputlist li {
+    padding-top: 7px;
+}

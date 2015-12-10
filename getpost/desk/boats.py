@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, redirect, request, session
 from bcrypt import hashpw, gensalt
 
 from getpost.models import Account, Student, Employee
-from getpost.orm import engine, Session
+from getpost.orm import Session
 
 
 boats_blueprint = Blueprint('boats', __name__, url_prefix='/signup')
@@ -29,7 +29,8 @@ def boats_new():
 
 def activate_student(form):
     email, tnum, password = form['email'], form['tnum'], form['passone']
-    account_rows = Session.query(Account.email_address).filter(Account.email_address == email)
+    account_rows = Session.query(Account.email_address).\
+                           filter(Account.email_address == email)
     if account_rows.count() == 1:
         password_hash = hashpw(bytes(password, 'ASCII'), gensalt(SALT_ROUNDS))
         account_rows.update({'password': password_hash, 'verified': True})

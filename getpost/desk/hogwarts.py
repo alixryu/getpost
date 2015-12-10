@@ -6,7 +6,8 @@ hogwarts_blueprint = Blueprint('hogwarts', __name__, url_prefix='')
 
 css_specials = {'template.css': 'maraudersmap.css',
                 'home.css': 'hogwarts.css',
-                'signup.css': 'boats.css'}
+                'signup.css': 'boats.css',
+                'auth.css': 'carriages.css'}
 js_specials = {'signup.js': 'boats.js'}
 
 

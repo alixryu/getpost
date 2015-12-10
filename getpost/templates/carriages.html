@@ -4,6 +4,26 @@
     Log in
 {% endblock %}
 
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="/css/auth.css" />
+{% endblock %}
+
 {% block content %}
     <h1>Welcome to the Log In Page.</h1>
+    <form action="in" method="POST" class="inputform" id="loginform">
+        <ul class="inputlist">
+            <li id="email">
+                Email Address:
+                <br />
+                <input type="email" name="email" pattern="^[a-zA-Z0-9]+@oberlin.edu$" required />
+            </li>
+            <li id="password">
+                Password:
+                <br />
+                <input type="password" name="password" pattern=".{6,}" required />
+            </li>
+        </ul>
+        <input type="submit" value="Sign up!" />
+    </form>
 {% endblock %}
