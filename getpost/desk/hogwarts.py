@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for
+from os.path import join
 
 
 hogwarts_blueprint = Blueprint('hogwarts', __name__, url_prefix='')
@@ -33,12 +34,14 @@ def hogwargs_index():
 @hogwarts_blueprint.route('/css/<path:path>')
 def send_css(path):
     if path in css_specials:
-        path = 'css/'+css_specials[path]
+        path = css_specials[path]
+    path = join("css", path)
     return redirect(url_for('static', filename=path))
 
 
 @hogwarts_blueprint.route('/js/<path:path>')
 def send_js(path):
     if path in js_specials:
-        path = 'js/'+js_specials[path]
+        path = js_specials[path]
+    path = join("js", path)
     return redirect(url_for('static', filename=path))
