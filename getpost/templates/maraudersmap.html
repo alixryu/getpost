@@ -24,7 +24,7 @@
         {% block flasherrors %}
             {% with errors = get_flashed_messages(category_filter=["error"]) %}
                 {% if errors %}
-                    <div id="error" class="flash">
+                    <div class="flash flasherror">
                         The following error(s) occurred:
                         <ul class="flashlist">
                             {% for message in errors %}
@@ -38,7 +38,7 @@
         {% block flashsuccesses %}
             {% with successes = get_flashed_messages(category_filter=["success"]) %}
                 {% if successes %}
-                    <div id="success" class="flash">
+                    <div class="flash flashsuccess">
                         <ul class="flashlist">
                             {% for message in successes %}
                                 <li>{{ message }}</li>
