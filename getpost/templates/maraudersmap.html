@@ -13,33 +13,38 @@
     <div class="header">
         {% block header %}
             <span class="headertext"><a href="/">GetPost</a></span>
-            {% if 'logged_in' in session: %}
-                <span class="login">
-                    {% if session['first_name'] %}
-                        Welcome back, {{ session['first_name'] }}!
-                    {% else %}
-                        Welcome back!
+            <span class="login">
+                <ul class="headerlist">
+                    {% if 'logged_in' in session: %}
+                        {% if session['first_name'] %}
+                            <li>Welcome back, {{ session['first_name'] }}!</li>
+                        {% else %}
+                            <li>Welcome back!</li>
+                        {% endif %}
+                        <li><a href="/auth/out/">Log out</a></li>
+                    {% else: %}
+                        <li><a href="/auth/">Log in</a></li>
+                        <li><a href="/signup/">Sign up</a></li>
                     {% endif %}
-                    | <a href="/auth/out/">Log out</a></span>
-                {% if session['role'] == 'student' %}
-                    <span class="headertools">
-                        <ul class="headertoolslist">
+                </ul>
+            </span>
+            {% if 'logged_in' in session: %}
+                <span class="headertools">
+                    <ul class="headerlist">
+                        {% if session['role'] == 'student' %}
                             <li><a href="/email/">Email</a></li>
                             <li><a href="/packages/">Packages</a></li>
-                            <li><a href="/students/">Students</a></li>
-                        </ul>
-                    </span>
-                {% elif session['role'] == 'employee' %}
-                    <span class="headertools">
-                    </span>
-                {% elif session['role'] == 'administrator' %}
-                    <span class="headertools">
-                    </span>
-                {% endif %}
-            {% else: %}
-                <span class="login">
-                    <a href="/auth/">Log in</a> |
-                    <a href="/signup/">Sign up</a>
+                            <li><a href="/students/view/me/">Account</a></li>
+                        {% elif session['role'] == 'employee' %}
+                            <li><a href="/email/">Email</a></li>
+                            <li><a href="/packages/">Packages</a></li>
+                            <li><a href="/students/view/all/">Students</a></li>
+                        {% elif session['role'] == 'administrator' %}
+                            <li><a href="/email/">Email</a></li>
+                            <li><a href="/packages/">Packages</a></li>
+                            <li><a href="/students/view/all/">Students</a></li>
+                        {% endif %}
+                    </ul>
                 </span>
             {% endif %}
         {% endblock %}

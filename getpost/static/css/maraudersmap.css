@@ -46,13 +46,13 @@ body {
     left: 40px;
 }
 
-.headertoolslist {
+.headerlist {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
-.headertoolslist li{
+.headerlist li{
     display: inline-block;
     margin: 0 3px 0 0;
 }
