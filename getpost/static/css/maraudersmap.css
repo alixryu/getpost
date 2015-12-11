@@ -63,17 +63,17 @@ body {
 }
 
 .flash {
-    margin: 0 auto 5px;
+    margin: 0 auto;
     border: 2px solid;
     border-radius: 10px;
     width: 300px;
     font-family: Helvetica, sans-serif;
     font-size: 20px;
     color: black;
+    padding: 10px 0 10px 10px;
 }
 
 .flasherror {
-    padding: 7px 0 7px 10px;
     border-color: rgb(255, 0, 0);
     border-color: rgba(255, 0, 0, 0.4);
     background-color: rgb(255, 127, 127);
@@ -81,7 +81,6 @@ body {
 }
 
 .flashsuccess {
-    padding: 0 0 0 10px;
     border-color: rgb(0, 255, 0);
     border-color: rgba(0, 255, 0, 0.4);
     background-color: rgb(127, 255, 127);
@@ -90,9 +89,9 @@ body {
 
 .flashlist {
     font-size: 15px;
-    list-style-position: inside;
-    margin: 15px 0;
-    padding: 0 10px;
+    list-style-position: outside;
+    margin: 0;
+    padding: 0 20px;
 }
 
 .footer {
