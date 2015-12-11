@@ -20,10 +20,17 @@
                             <li>Welcome back, {{ session['first_name'] }}!</li>
                         {% else %}
                             <li>Welcome back!</li>
+                        {% endif %} |
+                        {% if session['role'] == 'student' %}
+                            <li><a href="/students/view/me">Account</a></li> |
+                        {% elif session['role'] == 'employee' %}
+                            <li><a href="/employees/view/me">Account</a></li> |
+                        {% elif session['role'] == 'administrator' %}
+                            <li><a href="/admin/view/me">Account</a></li> |
                         {% endif %}
                         <li><a href="/auth/out/">Log out</a></li>
                     {% else: %}
-                        <li><a href="/auth/">Log in</a></li>
+                        <li><a href="/auth/">Log in</a></li> |
                         <li><a href="/signup/">Sign up</a></li>
                     {% endif %}
                 </ul>
@@ -32,21 +39,18 @@
                 <span class="headertools">
                     <ul class="headerlist">
                         {% if session['role'] == 'student' %}
-                            <li><a href="/email/">Email</a></li>
+                            <li><a href="/email/">Email</a></li> |
                             <li><a href="/packages/">Packages</a></li>
-                            <li><a href="/students/view/me/">Account</a></li>
                         {% elif session['role'] == 'employee' %}
-                            <li><a href="/email/">Email</a></li>
-                            <li><a href="/packages/">Packages</a></li>
+                            <li><a href="/email/">Email</a></li> |
+                            <li><a href="/packages/">Packages</a></li> |
                             <li><a href="/students/view/all/">Students</a></li>
-                            <li><a href="/employees/view/me/">Account</a></li>
                         {% elif session['role'] == 'administrator' %}
-                            <li><a href="/email/">Email</a></li>
-                            <li><a href="/packages/">Packages</a></li>
-                            <li><a href="/students/view/all/">Students</a></li>
-                            <li><a href="/employees/view/all/">Employees</a></li>
+                            <li><a href="/email/">Email</a></li> |
+                            <li><a href="/packages/">Packages</a></li> |
+                            <li><a href="/students/view/all/">Students</a></li> |
+                            <li><a href="/employees/view/all/">Employees</a></li> |
                             <li><a href="/admin/view/all">Administrators</a></li>
-                            <li><a href="/admin/view/me">Account</a></li>
                         {% endif %}
                     </ul>
                 </span>
