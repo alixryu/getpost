@@ -14,9 +14,33 @@
         {% block header %}
             <span class="headertext"><a href="/">GetPost</a></span>
             {% if 'logged_in' in session: %}
-                <span class="login">Welcome back, {{ session['first_name'] }}! | <a href="/auth/out/">Log out</a></span>
+                <span class="login">
+                    {% if session['first_name'] %}
+                        Welcome back, {{ session['first_name'] }}!
+                    {% else %}
+                        Welcome back!
+                    {% endif %}
+                    | <a href="/auth/out/">Log out</a></span>
+                {% if session['role'] == 'student' %}
+                    <span class="headertools">
+                        <ul class="headertoolslist">
+                            <li><a href="/email/">Email</a></li>
+                            <li><a href="/packages/">Packages</a></li>
+                            <li><a href="/notifications/">Notifications</a></li>
+                        </ul>
+                    </span>
+                {% elif session['role'] == 'employee' %}
+                    <span class="headertools">
+                    </span>
+                {% elif session['role'] == 'administrator' %}
+                    <span class="headertools">
+                    </span>
+                {% endif %}
             {% else: %}
-                <span class="login"><a href="/auth/">Log in</a> | <a href="/signup/">Sign up</a></span>
+                <span class="login">
+                    <a href="/auth/">Log in</a> |
+                    <a href="/signup/">Sign up</a>
+                </span>
             {% endif %}
         {% endblock %}
     </div>
