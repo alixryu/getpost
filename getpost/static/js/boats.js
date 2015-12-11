@@ -3,14 +3,14 @@ function roleChange() {
     $('#employeemessage').hide(100);
     $('#email').show(100);
     $('#tnum').show(100);
-    $('#passone').show(100);
-    $('#passtwo').show(100);
+    $('#password').show(100);
+    $('#passwordconfirm').show(100);
   } else if (this.value === 'employee') {
     $('#employeemessage').show(100);
     $('#email').hide(100);
     $('#tnum').hide(100);
-    $('#passone').hide(100);
-    $('#passtwo').hide(100);
+    $('#password').hide(100);
+    $('#passwordconfirm').hide(100);
   }
 }
 
@@ -51,8 +51,8 @@ function validateTNumber() {
 }
 
 function validatePassword() {
-  var passone = $('#passone [name="passone"]').val();
-  var passtwo = $('#passtwo [name="passtwo"]').val();
+  var passone = $('#password [name="password"]').val();
+  var passtwo = $('#passwordconfirm [name="passwordconfirm"]').val();
   if (passone.length >= 6 && passtwo === passone) {
     return '';
   } else {
@@ -68,6 +68,10 @@ function validatePassword() {
   }
 }
 
+function stripForm() {
+  $('#passwordconfirm').remove();
+}
+
 function formSubmit(event) {
   message = '';
   message += validateEmail();
@@ -78,6 +82,7 @@ function formSubmit(event) {
           'sign-up information:\n' + message);
     event.preventDefault();
   }
+  stripForm();
 }
 
 function onReady() {

@@ -23,7 +23,7 @@ def boats_index():
 def boats_new():
     if 'logged_in' in session:
         return redirect('/', 303)
-    required_params = {'email', 'passone', 'role'}
+    required_params = {'email', 'password', 'role'}
     provided_params = set(request.form)
     if required_params <= provided_params:
         role = request.form['role']
@@ -42,7 +42,7 @@ def boats_new():
     return redirect('/signup/', 307)
 
 def activate_student(form):
-    email, tnum, password = form['email'], form['tnum'], form['passone']
+    email, tnum, password = form['email'], form['tnum'], form['password']
     try:
         account = Session.query(Account).filter(Account.email_address == email).one()
         if account.verified:

@@ -32,15 +32,15 @@
                 <br />
                 <input type="text" name="tnum" pattern="^T?[0-9]{8}$" value="{{ request.form['tnum'] }}" required />
             </li>
-            <li id="passone">
+            <li id="password">
                 Password (must be at least six characters long):
                 <br />
-                <input type="password" name="passone" pattern=".{6,}" required />
+                <input type="password" name="password" pattern=".{6,}" required />
             </li>
-            <li id="passtwo">
+            <li id="passwordconfirm">
                 Confirm Password:
                 <br />
-                <input type="password" name="passtwo" pattern=".{6,}" required />
+                <input type="password" name="passwordconfirm" pattern=".{6,}" required />
             </li>
             <li>
                 Are you a student or employee?
