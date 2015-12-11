@@ -15,7 +15,7 @@
 
 .linkslist a {
     font-size: 60px;
-    color: #91002E;
+    color: inherit;
 }
 
 .linkslist li {

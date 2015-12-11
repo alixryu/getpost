@@ -39,6 +39,12 @@ body {
     right: 40px;
 }
 
+.content {
+    padding: 10px 15px 70px;
+    color: #91002E;
+    overflow-y: auto;
+}
+
 .flash {
     margin: 0 auto 5px;
     border: 2px solid;
@@ -70,12 +76,6 @@ body {
     list-style-position: inside;
     margin: 15px 0;
     padding: 0 10px;
-}
-
-.content {
-    padding: 10px 15px 70px;
-    color: #91002E;
-    overflow-y: auto;
 }
 
 .footer {
