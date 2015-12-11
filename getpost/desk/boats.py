@@ -12,14 +12,14 @@ boats_blueprint = Blueprint('boats', __name__, url_prefix='/signup')
 SALT_ROUNDS = 12
 
 
-@boats_blueprint.route('/')
+@boats_blueprint.route('/', methods={'GET', 'POST'})
 def boats_index():
     if 'logged_in' in session:
         return redirect('/', 303)
     return render_template('boats.html')
 
 
-@boats_blueprint.route('/new', methods={'POST'})
+@boats_blueprint.route('/new/', methods={'POST'})
 def boats_new():
     if 'logged_in' in session:
         return redirect('/', 303)
@@ -39,7 +39,7 @@ def boats_new():
     else:
         missing_params = required_params - provided_params
         flash('The following parameters were missing: {}'.format(', '.join(missing_params)))
-    return redirect('/signup', 303)
+    return redirect('/signup/', 307)
 
 def activate_student(form):
     email, tnum, password = form['email'], form['tnum'], form['passone']
@@ -70,7 +70,8 @@ def activate_student(form):
         flash('We found multiple account records for the email {}'.format(email), 'error')
     except Exception:
         flash('An unaccounted-for error occurred', 'error')
-    return redirect('/signup', 303)
+    return redirect('/signup/', 307)
 
 def add_employee(form):
-    return redirect('/signup', 303)
+    flash('This feature is not yet implemented.', 'error')
+    return redirect('/signup/', 307)

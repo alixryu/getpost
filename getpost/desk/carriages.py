@@ -7,7 +7,6 @@ from getpost.models import Account, Student
 from getpost.orm import Session
 
 
-
 carriages_blueprint = Blueprint('carriages', __name__, url_prefix='/auth')
 
 
@@ -17,7 +16,7 @@ def carriages_index():
         return redirect('/', 303)
     return render_template('carriages.html')
 
-@carriages_blueprint.route('/in', methods={'POST'})
+@carriages_blueprint.route('/in/', methods={'POST'})
 def carriages_in():
     if 'logged_in' in session:
         return redirect('/', 303)
@@ -28,7 +27,7 @@ def carriages_in():
     else:
         missing_params = required_params - provided_params
         flash('The following parameters were missing: {}'.format(', '.join(missing_params)))
-    return redirect('/auth', 303)
+    return redirect('/auth/', 303)
 
 def validate_login(form):
     email, password = form['email'], form['password']
@@ -40,13 +39,13 @@ def validate_login(form):
             flash('Invalid email/password combination', 'error')
         else:
             session['logged_in'] = True
+            session['email'] = account.email_address
             if account.role == 'student':
                 student = Session.query(Student).get(account.id)
                 if student:
                     session['role'] = 'student'
                     session['first_name'] = student.first_name
                     session['last_name'] = student.last_name
-                    session['email'] = account.email_address
             flash('Login successful!', 'success')
             return redirect('/', 303)
     except NoResultFound:
@@ -55,9 +54,9 @@ def validate_login(form):
         flash('We found multiple account records for the email {}'.format(email), 'error')
     except Exception:
         flash('An unaccounted-for error occurred', 'error')
-    return redirect('/auth', 303)
+    return redirect('/auth/', 303)
 
-@carriages_blueprint.route('/out')
+@carriages_blueprint.route('/out/')
 def carriages_out():
     if 'logged_in' in session:
         for key in {'logged_in', 'role', 'first_name', 'last_name', 'email'}:
