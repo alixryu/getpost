@@ -10,13 +10,13 @@ from getpost.orm import Session
 carriages_blueprint = Blueprint('carriages', __name__, url_prefix='/auth')
 
 
-@carriages_blueprint.route('/')
+@carriages_blueprint.route('/', methods={'GET', 'POST'})
 def carriages_index():
     if 'logged_in' in session:
         return redirect('/', 303)
     return render_template('carriages.html')
 
-@carriages_blueprint.route('/in/', methods={'POST'})
+@carriages_blueprint.route('/in/', methods={'GET', 'POST'})
 def carriages_in():
     if 'logged_in' in session:
         return redirect('/', 303)
@@ -27,7 +27,7 @@ def carriages_in():
     else:
         missing_params = required_params - provided_params
         flash('The following parameters were missing: {}'.format(', '.join(missing_params)))
-    return redirect('/auth/', 303)
+    return redirect('/auth/', 307)
 
 def validate_login(form):
     email, password = form['email'], form['password']
@@ -54,7 +54,7 @@ def validate_login(form):
         flash('We found multiple account records for the email {}'.format(email), 'error')
     except Exception:
         flash('An unaccounted-for error occurred', 'error')
-    return redirect('/auth/', 303)
+    return redirect('/auth/', 307)
 
 @carriages_blueprint.route('/out/')
 def carriages_out():

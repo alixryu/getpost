@@ -1,10 +1,16 @@
 function roleChange() {
   if (this.value === 'student') {
+    $('#employeemessage').hide(100);
+    $('#email').show(100);
     $('#tnum').show(100);
-    $('#tnum [name="tnum"]').attr('required', true);
+    $('#passone').show(100);
+    $('#passtwo').show(100);
   } else if (this.value === 'employee') {
+    $('#employeemessage').show(100);
+    $('#email').hide(100);
     $('#tnum').hide(100);
-    $('#tnum [name="tnum"]').removeAttr('required');
+    $('#passone').hide(100);
+    $('#passtwo').hide(100);
   }
 }
 

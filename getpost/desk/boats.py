@@ -19,7 +19,7 @@ def boats_index():
     return render_template('boats.html')
 
 
-@boats_blueprint.route('/new/', methods={'POST'})
+@boats_blueprint.route('/new/', methods={'GET', 'POST'})
 def boats_new():
     if 'logged_in' in session:
         return redirect('/', 303)

@@ -17,17 +17,20 @@
 
 {% block content %}
     <h1>Sign up</h1>
-    <form action="new" method="POST" class="inputform" id="signupform">
+    <form action="new/" method="POST" class="inputform" id="signupform">
+        <div id="employeemessage" class="employeemessage" hidden>
+            Employees cannot sign up directly; please contact the mail room offices to create a new account.
+        </div>
         <ul class="inputlist">
             <li id="email">
                 Email Address (must be an oberlin.edu address):
                 <br />
-                <input type="email" name="email" pattern="^[a-zA-Z0-9]+@oberlin.edu$" required />
+                <input type="email" name="email" pattern="^[a-zA-Z0-9]+@oberlin.edu$" value="{{ request.form['email'] }}"required />
             </li>
             <li id="tnum">
                 T number (required for students, does not need to begin with 'T'):
                 <br />
-                <input type="text" name="tnum" pattern="^T?[0-9]{8}$" required />
+                <input type="text" name="tnum" pattern="^T?[0-9]{8}$" value="{{ request.form['tnum'] }}" required />
             </li>
             <li id="passone">
                 Password (must be at least six characters long):

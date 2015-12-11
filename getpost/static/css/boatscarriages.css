@@ -26,3 +26,7 @@ h1 {
 .inputlist li {
     padding: 7px 0 0;
 }
+
+.employeemessage {
+    font-size: 15px;
+}
