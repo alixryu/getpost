@@ -40,10 +40,9 @@ body {
 }
 
 .content {
-    padding: 10px 15px 10px 15px;
+    padding: 10px 15px 30px;
     color: #91002E;
     overflow-y: auto;
-    margin: 10px 0;
 }
 
 .footer {
