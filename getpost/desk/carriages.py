@@ -40,10 +40,10 @@ def validate_login(form):
         else:
             session['logged_in'] = True
             session['email'] = account.email_address
+            session['role'] = account.role
             if account.role == 'student':
                 student = Session.query(Student).get(account.id)
                 if student:
-                    session['role'] = 'student'
                     session['first_name'] = student.first_name
                     session['last_name'] = student.last_name
             flash('Login successful!', 'success')

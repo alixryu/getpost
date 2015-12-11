@@ -37,8 +37,16 @@ class Account(Base):
     id = Column(Integer, primary_key=True)
     email_address = Column(String)
     password = Column(Binary)
-    role = Column(Enum('student', 'employee', name='account_type'))
+    role = Column(Enum('student', 'employee', 'administrator', name='account_type'))
     verified = Column(Boolean)
+
+
+class Administrator(Base):
+    __tablename__ = 'administrator'
+
+    id = Column(Integer, ForeignKey('account.id'), primary_key=True)
+    first_name = Column(String)
+    last_name = Column(String)
 
 
 class Employee(Base):

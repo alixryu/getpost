@@ -39,10 +39,14 @@
                             <li><a href="/email/">Email</a></li>
                             <li><a href="/packages/">Packages</a></li>
                             <li><a href="/students/view/all/">Students</a></li>
+                            <li><a href="/employees/view/me/">Account</a></li>
                         {% elif session['role'] == 'administrator' %}
                             <li><a href="/email/">Email</a></li>
                             <li><a href="/packages/">Packages</a></li>
                             <li><a href="/students/view/all/">Students</a></li>
+                            <li><a href="/employees/view/all/">Employees</a></li>
+                            <li><a href="/admin/view/all">Administrators</a></li>
+                            <li><a href="/admin/view/me">Account</a></li>
                         {% endif %}
                     </ul>
                 </span>

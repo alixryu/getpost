@@ -7,6 +7,8 @@ from .desk.carriages import carriages_blueprint
 from .desk.owls import owls_blueprint
 from .desk.parcels import parcels_blueprint
 from .desk.wizards import wizards_blueprint
+from .desk.professors import professors_blueprint
+from .desk.headmaster import headmaster_blueprint
 
 
 def create_app(config_obj):
@@ -19,6 +21,8 @@ def create_app(config_obj):
     app.register_blueprint(owls_blueprint)
     app.register_blueprint(parcels_blueprint)
     app.register_blueprint(wizards_blueprint)
+    app.register_blueprint(professors_blueprint)
+    app.register_blueprint(headmaster_blueprint)
 
     @app.errorhandler(500)
     def internal(error):
