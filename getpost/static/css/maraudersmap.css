@@ -1,10 +1,12 @@
 html {
     min-height: 100%;
+    min-width: 800px;
     position: relative;
+    overflow: auto;
 }
 
 body {
-    margin: 0 0 40px;
+    margin: 0;
     background-color: #EEEEEE;
 }
 
@@ -39,10 +41,58 @@ body {
     right: 40px;
 }
 
+.headertools {
+    position: absolute;
+    left: 40px;
+}
+
+.headerlist {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.headerlist li{
+    display: inline-block;
+    margin: 0 3px 0 0;
+}
+
 .content {
-    padding: 10px 15px 30px;
+    padding: 10px 15px 70px;
     color: #91002E;
-    overflow-y: auto;
+}
+
+.flash {
+    margin: 0 auto 5px;
+    border: 2px solid;
+    border-radius: 10px;
+    width: 300px;
+    font-family: Helvetica, sans-serif;
+    font-size: 20px;
+    color: black;
+}
+
+.flasherror {
+    padding: 7px 0 7px 10px;
+    border-color: rgb(255, 0, 0);
+    border-color: rgba(255, 0, 0, 0.4);
+    background-color: rgb(255, 127, 127);
+    background-color: rgba(255, 127, 127, 0.4);
+}
+
+.flashsuccess {
+    padding: 0 0 0 10px;
+    border-color: rgb(0, 255, 0);
+    border-color: rgba(0, 255, 0, 0.4);
+    background-color: rgb(127, 255, 127);
+    background-color: rgba(127, 255, 127, 0.4);
+}
+
+.flashlist {
+    font-size: 15px;
+    list-style-position: inside;
+    margin: 15px 0;
+    padding: 0 10px;
 }
 
 .footer {

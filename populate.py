@@ -18,8 +18,9 @@ def populate_account(csv_dictreader, session):
     for row in csv_dictreader:
         account = Account(
             email_address=row['email_id']+'@oberlin.edu',
-            password=row['email_id'],
-            role='student'
+            password=None,
+            role='student',
+            verified=False
         )
         session.add(account)
 

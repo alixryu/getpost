@@ -13,14 +13,74 @@
     <div class="header">
         {% block header %}
             <span class="headertext"><a href="/">GetPost</a></span>
-            {% if not logged_in: %}
-                <span class="login"><a href="/login">Log in</a> | <a href="/signup">Sign up</a></span>
-            {% else: %}
-                <span class="login">Welcome back! | <a href="/logout">Log out</a></span>
+            <span class="login">
+                <ul class="headerlist">
+                    {% if 'logged_in' in session: %}
+                        {% if session['first_name'] %}
+                            <li>Welcome back, {{ session['first_name'] }}!</li>
+                        {% else %}
+                            <li>Welcome back!</li>
+                        {% endif %}
+                        <li><a href="/auth/out/">Log out</a></li>
+                    {% else: %}
+                        <li><a href="/auth/">Log in</a></li>
+                        <li><a href="/signup/">Sign up</a></li>
+                    {% endif %}
+                </ul>
+            </span>
+            {% if 'logged_in' in session: %}
+                <span class="headertools">
+                    <ul class="headerlist">
+                        {% if session['role'] == 'student' %}
+                            <li><a href="/email/">Email</a></li>
+                            <li><a href="/packages/">Packages</a></li>
+                            <li><a href="/students/view/me/">Account</a></li>
+                        {% elif session['role'] == 'employee' %}
+                            <li><a href="/email/">Email</a></li>
+                            <li><a href="/packages/">Packages</a></li>
+                            <li><a href="/students/view/all/">Students</a></li>
+                            <li><a href="/employees/view/me/">Account</a></li>
+                        {% elif session['role'] == 'administrator' %}
+                            <li><a href="/email/">Email</a></li>
+                            <li><a href="/packages/">Packages</a></li>
+                            <li><a href="/students/view/all/">Students</a></li>
+                            <li><a href="/employees/view/all/">Employees</a></li>
+                            <li><a href="/admin/view/all">Administrators</a></li>
+                            <li><a href="/admin/view/me">Account</a></li>
+                        {% endif %}
+                    </ul>
+                </span>
             {% endif %}
         {% endblock %}
     </div>
     <div class="content">
+        {% block flasherrors %}
+            {% with errors = get_flashed_messages(category_filter=["error"]) %}
+                {% if errors %}
+                    <div class="flash flasherror">
+                        The following error(s) occurred:
+                        <ul class="flashlist">
+                            {% for message in errors %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endwith %}
+        {% endblock %}
+        {% block flashsuccesses %}
+            {% with successes = get_flashed_messages(category_filter=["success"]) %}
+                {% if successes %}
+                    <div class="flash flashsuccess">
+                        <ul class="flashlist">
+                            {% for message in successes %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endwith %}
+        {% endblock %}
         {% block content %}{% endblock %}
     </div>
     <div class="footer">

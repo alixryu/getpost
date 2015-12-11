@@ -1,23 +1,29 @@
 function roleChange() {
   if (this.value === 'student') {
+    $('#employeemessage').hide(100);
+    $('#email').show(100);
     $('#tnum').show(100);
-    $('#tnum [name="tnum"]').attr('required', true);
+    $('#passone').show(100);
+    $('#passtwo').show(100);
   } else if (this.value === 'employee') {
+    $('#employeemessage').show(100);
+    $('#email').hide(100);
     $('#tnum').hide(100);
-    $('#tnum [name="tnum"]').removeAttr('required');
+    $('#passone').hide(100);
+    $('#passtwo').hide(100);
   }
 }
 
 function validateEmail() {
   var email = $('#email [name="email"]').val();
-  if (email.match(/^[a-zA-Z0-9.]+@oberlin.edu$/)) {
+  if (email.match(/^[a-zA-Z0-9]+@oberlin.edu$/)) {
     return '';
   } else {
     if (email === '') {
       return 'An email address is required in order to sign up.\n';
-    } else if (!email.match(/^[a-zA-Z.]+@/)) {
-      return 'Invalid email address: only letters, digits, and the "." ' +
-        'character may precede the "@" symbol.\n';
+    } else if (!email.match(/^[a-zA-Z0-9]+@/)) {
+      return 'Invalid email address: only letters and digits may precede the ' +
+      '"@" symbol.\n';
     } else if (!email.match(/@oberlin.edu$/)) {
       return 'Invalid email address: must end in "@oberlin.edu".\n';
     } else {

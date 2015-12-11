@@ -1,23 +1,7 @@
 .mission {
-    padding: 0;
-    margin: 0 0 15px 0;
+    padding: 2%;
+    position: relative;
     color: #330000;
     font-size: 20px;
-}
-
-.linkslist {
-    padding: 0;
-    margin: 15px 0 0 0;
-    text-align: center;
-    list-style-type: none;
-    font-family: Helvetica, sans-serif;
-}
-
-.linkslist a {
-    font-size: 60px;
-    color: #91002E;
-}
-
-.linkslist li {
-    padding-top: 10px;
+    text-align: justify;
 }

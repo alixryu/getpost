@@ -1,9 +1,10 @@
 h1 {
     text-align: center;
+    margin: 20px 0 0;
 }
 
 .inputform {
-    padding: 20px 0;
+    padding: 10px 0;
     font-family: Helvetica, sans-serif;
     font-size: 13px;
     color: #91002E;
@@ -23,5 +24,9 @@ h1 {
 
 
 .inputlist li {
-    padding-top: 7px;
+    padding: 7px 0 0;
+}
+
+.employeemessage {
+    font-size: 15px;
 }

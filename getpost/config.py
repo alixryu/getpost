@@ -40,6 +40,7 @@ class Config(object):
     DB_URI = getdefaultURI()
     if DB_URI is None:
         DB_URI = DEFAULT_DB_URI
+    SECRET_KEY = 'DO NOT USE IN PRODUCTION'
 
 
 class ProdConfig(Config):
@@ -49,6 +50,7 @@ class ProdConfig(Config):
 class DevConfig(Config):
     DEBUG = True
     SQLALCHEMY_ECHO = True
+    SECRET_KEY = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT' # Taken from Flask docs
 
 
 class TestConfig(Config):
