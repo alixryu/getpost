@@ -21,6 +21,33 @@
         {% endblock %}
     </div>
     <div class="content">
+        {% block flasherrors %}
+            {% with errors = get_flashed_messages(category_filter=["error"]) %}
+                {% if errors %}
+                    <div id="error" class="flash">
+                        The following error(s) occurred:
+                        <ul class="flashlist">
+                            {% for message in errors %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endwith %}
+        {% endblock %}
+        {% block flashsuccesses %}
+            {% with successes = get_flashed_messages(category_filter=["success"]) %}
+                {% if successes %}
+                    <div id="success" class="flash">
+                        <ul class="flashlist">
+                            {% for message in successes %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endwith %}
+        {% endblock %}
         {% block content %}{% endblock %}
     </div>
     <div class="footer">
