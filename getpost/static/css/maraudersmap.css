@@ -10,6 +10,11 @@ body {
     background-color: #EEEEEE;
 }
 
+h1 {
+    text-align: center;
+    margin: 20px 0 0;
+}
+
 .header {
     margin: 0;
     padding: 0;
