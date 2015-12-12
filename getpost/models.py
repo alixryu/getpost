@@ -3,7 +3,7 @@
 """
 from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, String, Boolean, Binary
 
-from bcrypt import hashpw
+from bcrypt import hashpw, gensalt
 
 from .orm import Base
 
@@ -39,6 +39,12 @@ class Account(Base):
     password = Column(Binary)
     role = Column(Enum('student', 'employee', 'administrator', name='account_type'))
     verified = Column(Boolean)
+
+    def set_password(self, password):
+        self.password = hashpw(bytes(password, 'ASCII'), gensalt())
+
+    def check_password(self, password):
+        return self.password == hashpw(bytes(password, 'ASCII'), self.password)
 
 
 class Administrator(Base):
