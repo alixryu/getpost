@@ -7,11 +7,6 @@
 {% block styles %}
     {{ super() }}
     <link rel="stylesheet" href="/css/forms.css" />
-    <style>
-        .employeemessage {
-            font-size: 15px;
-        }
-    </style>
 {% endblock %}
 
 {% block scripts %}
@@ -23,17 +18,14 @@
 {% block content %}
     <h1>Sign up</h1>
     <form action="new/" method="POST" class="inputform" id="signupform">
-        <div id="employeemessage" class="employeemessage" hidden>
-            Employees cannot sign up directly; please contact the mail room offices to create a new account.
-        </div>
         <ul class="inputlist">
             <li id="email">
-                Email Address (must be an oberlin.edu address):
+                Email Address (must be your oberlin.edu address):
                 <br />
                 <input type="email" name="email" pattern="^[a-zA-Z0-9]+@oberlin.edu$" value="{{ request.form['email'] }}"required />
             </li>
             <li id="tnum">
-                T number (required for students, does not need to begin with 'T'):
+                T number (does not need to begin with 'T'):
                 <br />
                 <input type="text" name="tnum" pattern="^T?[0-9]{8}$" value="{{ request.form['tnum'] }}" required />
             </li>
@@ -46,12 +38,6 @@
                 Confirm Password:
                 <br />
                 <input type="password" name="passwordconfirm" pattern=".{6,}" required />
-            </li>
-            <li>
-                Are you a student or employee?
-                <br />
-                <label><input type="radio" name="role" value="student" checked />Student </label>
-                <label><input type="radio" name="role" value="employee" />Employee</label>
             </li>
         </ul>
         <input type="submit" value="Sign up!" />

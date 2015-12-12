@@ -1,19 +1,3 @@
-function roleChange() {
-  if (this.value === 'student') {
-    $('#employeemessage').hide(100);
-    $('#email').show(100);
-    $('#tnum').show(100);
-    $('#password').show(100);
-    $('#passwordconfirm').show(100);
-  } else if (this.value === 'employee') {
-    $('#employeemessage').show(100);
-    $('#email').hide(100);
-    $('#tnum').hide(100);
-    $('#password').hide(100);
-    $('#passwordconfirm').hide(100);
-  }
-}
-
 function validateEmail() {
   var email = $('#email [name="email"]').val();
   if (email.match(/^[a-zA-Z0-9]+@oberlin.edu$/)) {
@@ -33,20 +17,16 @@ function validateEmail() {
 }
 
 function validateTNumber() {
-  if ($('input[type="radio"][name="role"][value="student"]').is(':checked')) {
-    var tnum = $('#tnum [name="tnum"]').val();
-    if (tnum.match(/^T?[0-9]{8}$/)) {
-      return '';
-    } else {
-      if (tnum === '') {
-        return 'A T number is required in order for students to sign up.\n';
-      } else {
-        return 'Invalid T number: must contain exactly eight digits, ' +
-        'optionally preceded by a capital "T".\n';
-      }
-    }
-  } else {
+  var tnum = $('#tnum [name="tnum"]').val();
+  if (tnum.match(/^T?[0-9]{8}$/)) {
     return '';
+  } else {
+    if (tnum === '') {
+      return 'A T number is required in order to sign up.\n';
+    } else {
+      return 'Invalid T number: must contain exactly eight digits, ' +
+      'optionally preceded by a capital "T".\n';
+    }
   }
 }
 
@@ -86,7 +66,6 @@ function formSubmit(event) {
 }
 
 function onReady() {
-  $('input[type="radio"][name="role"]').change(roleChange);
   $('#signupform').submit(formSubmit);
 }
 

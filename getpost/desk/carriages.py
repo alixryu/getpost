@@ -1,8 +1,6 @@
 from flask import Blueprint, render_template, session, redirect, request, flash
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
-from bcrypt import hashpw
-
 from getpost.models import Account, Student
 from getpost.orm import Session
 
@@ -35,7 +33,7 @@ def validate_login(form):
         account = Session.query(Account).filter(Account.email_address == email).one()
         if not account.verified:
             flash('This account is not yet verified', 'error')
-        elif account.password != hashpw(bytes(password, 'ASCII'), account.password):
+        elif not account.check_password(password):
             flash('Invalid email/password combination', 'error')
         else:
             session['logged_in'] = True

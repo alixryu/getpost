@@ -1,9 +1,7 @@
 from flask import Blueprint, render_template, redirect, request, session, flash
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
-from bcrypt import hashpw, gensalt
-
-from getpost.models import Account, Student, Employee
+from getpost.models import Account, Student
 from getpost.orm import Session
 
 
@@ -23,19 +21,10 @@ def boats_index():
 def boats_new():
     if 'logged_in' in session:
         return redirect('/', 303)
-    required_params = {'email', 'password', 'role'}
+    required_params = {'email', 'password', 'tnum'}
     provided_params = set(request.form)
     if required_params <= provided_params:
-        role = request.form['role']
-        if role == 'student':
-            if 'tnum' in request.form:
-                return activate_student(request.form)
-            else:
-                flash('No T number provided', 'error')
-        elif role == 'employee':
-            return add_employee(request.form)
-        else:
-            flash('Unrecognized role: "{}"'.format(role), 'error')
+        return activate_student(request.form)
     else:
         missing_params = required_params - provided_params
         flash('The following parameters were missing: {}'.format(', '.join(missing_params)))
@@ -52,7 +41,7 @@ def activate_student(form):
         if not account.verified and account.role == 'student':
             student = Session.query(Student).get(account.id)
             if student:
-                account.password = hashpw(bytes(password, 'ASCII'), gensalt(SALT_ROUNDS))
+                account.set_password(password)
                 account.verified = True
                 Session.commit()
                 session['logged_in'] = True
@@ -70,8 +59,4 @@ def activate_student(form):
         flash('We found multiple account records for the email {}'.format(email), 'error')
     except Exception:
         flash('An unaccounted-for error occurred', 'error')
-    return redirect('/signup/', 307)
-
-def add_employee(form):
-    flash('This feature is not yet implemented.', 'error')
     return redirect('/signup/', 307)
