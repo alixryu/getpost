@@ -3,7 +3,7 @@ from math import ceil
 from flask import Blueprint, render_template, request
 
 from . import ACCOUNT_PER_PAGE as page_size
-from ..models import Account, Student  # , Employee
+from ..models import Account, Employee
 from ..orm import Session
 
 
@@ -22,30 +22,27 @@ def professors_index():
 
     session = Session()
 
-    base_query = session.query(Student)
+    base_query = session.query(Employee)
     page_count = int(ceil(base_query.count()/page_size))
 
-    paginated_students = base_query.limit(
+    paginated_employees = base_query.limit(
         page_size
     ).offset(
         (page-1)*page_size
     ).from_self().join(Account).all()
 
-    students = []
-    for s_a in paginated_students:
-        student = {}
-        student['email_address'] = s_a.account.email_address
-        student['role'] = s_a.account.role
-        student['verified'] = s_a.account.verified
-        student['first_name'] = s_a.first_name
-        student['last_name'] = s_a.last_name
-        student['alternative_name'] = s_a.alternative_name
-        student['ocmr'] = s_a.ocmr
-        student['t_number'] = s_a.t_number
-        students.append(student)
+    employees = []
+    for e_a in paginated_employees:
+        employee = {}
+        employee['email_address'] = e_a.account.email_address
+        employee['role'] = e_a.account.role
+        employee['verified'] = e_a.account.verified
+        employee['first_name'] = e_a.first_name
+        employee['last_name'] = e_a.last_name
+        employees.append(employee)
     session.close()
     return render_template(
-        'professors.html', students=students, count=page_count
+        'professors.html', employees=employees, count=page_count
     )
 
 
