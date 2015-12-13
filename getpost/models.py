@@ -45,15 +45,15 @@ class Account(Base):
     )
     verified = Column(Boolean)
 
-<<<<<<< HEAD
+# <<<<<<< HEAD
     def set_password(self, password):
         self.password = hashpw(bytes(password, 'ASCII'), gensalt())
 
     def check_password(self, password):
         return self.password == hashpw(bytes(password, 'ASCII'), self.password)
-=======
+# =======
     student = relationship('Student', uselist=False, back_populates='account')
->>>>>>> 4013dc33fd09f4c3a2da41973954677bc0971f2c
+# >>>>>>> 4013dc33fd09f4c3a2da41973954677bc0971f2c
 
 
 class Administrator(Base):
