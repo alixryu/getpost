@@ -61,8 +61,9 @@ function formSubmit(event) {
     alert('The following problems occurred while trying to submit your ' +
           'sign-up information:\n' + message);
     event.preventDefault();
+  } else {
+    stripForm();
   }
-  stripForm();
 }
 
 function onReady() {
