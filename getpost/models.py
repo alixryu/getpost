@@ -40,20 +40,17 @@ class Account(Base):
     id = Column(Integer, primary_key=True)
     email_address = Column(String)
     password = Column(Binary)
+    verified = Column(Boolean)
     role = Column(
         Enum('student', 'employee', 'administrator', name='account_type')
     )
-    verified = Column(Boolean)
+    student = relationship('Student', uselist=False, back_populates='account')
 
-# <<<<<<< HEAD
     def set_password(self, password):
         self.password = hashpw(bytes(password, 'ASCII'), gensalt())
 
     def check_password(self, password):
         return self.password == hashpw(bytes(password, 'ASCII'), self.password)
-# =======
-    student = relationship('Student', uselist=False, back_populates='account')
-# >>>>>>> 4013dc33fd09f4c3a2da41973954677bc0971f2c
 
 
 class Administrator(Base):
