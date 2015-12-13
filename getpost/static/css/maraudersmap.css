@@ -78,17 +78,13 @@ h1 {
 }
 
 .flasherror {
-    border-color: rgb(255, 0, 0);
-    border-color: rgba(255, 0, 0, 0.4);
-    background-color: rgb(255, 127, 127);
-    background-color: rgba(255, 127, 127, 0.4);
+    border-color: rgb(229, 0, 26);
+    background-color: rgb(255, 100, 100);
 }
 
 .flashsuccess {
-    border-color: rgb(0, 255, 0);
-    border-color: rgba(0, 255, 0, 0.4);
-    background-color: rgb(127, 255, 127);
-    background-color: rgba(127, 255, 127, 0.4);
+    border-color: rgb(63, 191, 63);
+    background-color: rgb(127, 229, 127);
 }
 
 .flashlist {
