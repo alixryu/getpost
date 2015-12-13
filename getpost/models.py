@@ -1,7 +1,10 @@
 """:mod:`getpost.models` --- model module of getpost
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
-from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, String, Boolean, Binary
+
+from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer
+from sqlalchemy import String, Boolean, Binary
+from sqlalchemy.orm import relationship
 
 from bcrypt import hashpw, gensalt
 
@@ -37,14 +40,20 @@ class Account(Base):
     id = Column(Integer, primary_key=True)
     email_address = Column(String)
     password = Column(Binary)
-    role = Column(Enum('student', 'employee', 'administrator', name='account_type'))
+    role = Column(
+        Enum('student', 'employee', 'administrator', name='account_type')
+    )
     verified = Column(Boolean)
 
+<<<<<<< HEAD
     def set_password(self, password):
         self.password = hashpw(bytes(password, 'ASCII'), gensalt())
 
     def check_password(self, password):
         return self.password == hashpw(bytes(password, 'ASCII'), self.password)
+=======
+    student = relationship('Student', uselist=False, back_populates='account')
+>>>>>>> 4013dc33fd09f4c3a2da41973954677bc0971f2c
 
 
 class Administrator(Base):
@@ -72,3 +81,5 @@ class Student(Base):
     alternative_name = Column(String)
     ocmr = Column(String)
     t_number = Column(Integer)
+
+    account = relationship('Account', back_populates='student')
