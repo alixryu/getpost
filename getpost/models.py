@@ -10,7 +10,7 @@ from bcrypt import hashpw, gensalt
 
 from .orm import Base
 
-from flask import session
+from flask import session as user_session
 
 
 class Package(Base):
@@ -51,6 +51,8 @@ class Account(Base):
     employee = relationship('Employee', uselist=False, back_populates='account')
     administrator = relationship('Administrator', uselist=False, back_populates='account')
 
+    login_attributes = {'id', 'role', 'email_address'}
+
     def set_password(self, password):
         self.password = hashpw(bytes(password, 'ASCII'), gensalt())
 
@@ -69,17 +71,14 @@ class Account(Base):
 
 
     def log_in(self):
-        session['logged_in'] = True
-        session['id'] = self.id
-        session['role'] = self.role
-        session['email_address'] = self.email_address
+        user_session.update(self.as_dict(Account.login_attributes))
         person = self.get_person()
         if person:
             person.log_in()
 
     def log_out(self):
-        for attribute in ('logged_in', 'id', 'role', 'email_address'):
-            session.pop(attribute, None)
+        for attribute in Account.login_attributes:
+            user_session.pop(attribute, None)
         person = self.get_person()
         if person:
             person.log_out()
@@ -94,13 +93,14 @@ class Administrator(Base):
 
     account = relationship('Account', back_populates='administrator')
 
+    login_attributes = {'first_name', 'last_name'}
+
     def log_in(self):
-        session['first_name'] = self.first_name
-        session['last_name'] = self.last_name
+        user_session.update(self.as_dict(Administrator.login_attributes))
 
     def log_out(self):
-        for attribute in ('first_name', 'last_name'):
-            session.pop(attribute, None)
+        for attribute in Administrator.login_attributes:
+            user_session.pop(attribute, None)
 
 
 class Employee(Base):
@@ -112,13 +112,14 @@ class Employee(Base):
 
     account = relationship('Account', back_populates='employee')
 
+    login_attributes = {'first_name', 'last_name'}
+
     def log_in(self):
-        session['first_name'] = self.first_name
-        session['last_name'] = self.last_name
+        user_session.update(self.as_dict(Employee.login_attributes))
 
     def log_out(self):
-        for attribute in ('first_name', 'last_name'):
-            session.pop(attribute, None)
+        for attribute in Employee.login_attributes:
+            user_session.pop(attribute, None)
 
 
 class Student(Base):
@@ -133,13 +134,13 @@ class Student(Base):
 
     account = relationship('Account', back_populates='student')
 
+    login_attributes = {
+        'first_name', 'last_name', 'alternative_name', 'ocmr', 't_number'
+    }
+
     def log_in(self):
-        session['first_name'] = self.first_name
-        session['last_name'] = self.last_name
-        session['alternative_name'] = self.alternative_name
-        session['ocmr'] = self.ocmr
-        session['tnum'] = self.t_number
+        user_session.update(self.as_dict(Student.login_attributes))
 
     def log_out(self):
-        for attribute in ('first_name', 'last_name', 'alternative_name', 'ocmr', 'tnum'):
-            session.pop(attribute, None)
+        for attribute in Student.login_attributes:
+            user_session.pop(attribute, None)

@@ -18,7 +18,14 @@ class ReprBase(object):
             )
         )
 
-Base = declarative_base(cls=ReprBase)
+class DictBase(ReprBase):
+    def as_dict(self, columns=None):
+        if columns is None:
+            columns = {column.name for column in self.__table__.columns}
+        return {column: getattr(self, column) for column in columns}
+
+
+Base = declarative_base(cls=DictBase)
 
 engine = create_engine(config.DB_URI)
 session_factory = sessionmaker(bind=engine)

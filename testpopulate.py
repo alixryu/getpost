@@ -21,7 +21,7 @@ def add_account(**kwargs):
     Session.commit()
     return account.id
 
-def add_student(first_name='Test', last_name='Student', email_address='student@oberlin.edu'):
+def add_student(first_name='Test', last_name='Student', alternative_name='Obie', email_address='student@oberlin.edu'):
     id = add_account(email_address=email_address, role='student')
     student = Student(id=id, first_name=first_name, last_name=last_name, ocmr='10000')
     Session.add(student)

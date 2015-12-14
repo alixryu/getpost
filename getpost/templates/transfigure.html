@@ -18,35 +18,52 @@
 
 {% block content %}
     <h1>View/Edit Account</h1>
-    <form action="" method="POST" class="inputform" id="signupform">
+    <form action="edit/" method="POST" class="inputform" id="signupform">
         <ul class="inputlist">
             <li id="fname">
                 <div>First Name:</div>
-                <input type="text" name="fname" pattern="^[a-zA-Z' -]" value="{{ session['first_name'] or 'None listed' }}" {% if session['role'] not in ('employee', 'administrator'): %} disabled="disabled" {% endif %} />
+                <input  type="text" name="fname" pattern="^[a-zA-Z' -]+"
+                        value="{{ student['first_name'] or 'None listed' }}"
+                        {% if 'fname' not in editable: %}
+                            disabled="disabled"
+                        {% endif %}
+                />
             </li>
             <li id="lname">
                 <div>Last Name:</div>
-                <input type="text" name="lname" pattern="^[a-zA-Z' -]+$" value="{{ session['last_name'] or 'None listed' }}" {% if session['role'] not in ('employee', 'administrator'): %} disabled="disabled" {% endif %} />
+                <input  type="text" name="lname" pattern="^[a-zA-Z' -]+$"
+                        value="{{ student['last_name'] or 'None listed' }}"
+                        {% if 'lname' not in editable: %}
+                            disabled="disabled"
+                        {% endif %}
+                />
             </li>
             <li id="tnum">
                 <div>T number (does not need to begin with 'T'):</div>
-                <input type="text" name="tnum" pattern="^T?[0-9]{8}$" value="{{ session['tnum'] or 'None listed' }}" {% if session['role'] not in ('employee', 'administrator'): %} disabled="disabled" {% endif %} />
+                <input  type="text" name="tnum" pattern="^T?[0-9]{8}$"
+                        value="{{ student['tnum'] or 'None listed' }}"
+                        {% if 'tnum' not in editable: %}
+                            disabled="disabled"
+                        {% endif %}
+                />
             </li>
             <li id="aname">
                 <div>Preferred Name:</div>
-                <input type="text" name="aname" pattern="^[a-zA-Z' -]+$" value="{{ session['alternative_name'] }}" />
+                <input  type="text" name="aname" pattern="^[a-zA-Z' -]+$"
+                        value="{{ student['alternative_name'] or '' }}"
+                        {% if 'aname' not in editable: %}
+                            disabled="disabled"
+                        {% endif %}
+                />
             </li>
             <li id="email">
                 <div>Email Address (can be any email address):</div>
-                <input type="email" name="email" pattern="^[a-zA-Z0-9]+@oberlin.edu$" value="{{ session['email'] }}" />
-            </li>
-            <li id="password">
-                <div>Change Password (must be at least six characters long):</div>
-                <input type="password" name="password" pattern=".{6,}" />
-            </li>
-            <li id="passwordconfirm">
-                <div>Confirm Password Change:</div>
-                <input type="password" name="passwordconfirm" pattern=".{6,}" />
+                <input  type="email" name="email" pattern="^.+@.+\..+@$"
+                        value="{{ student['email_address'] or 'None listed'}}"
+                        {% if 'email' not in editable: %}
+                            disabled="disabled"
+                        {% endif %}
+                />
             </li>
         </ul>
         <input type="submit" value="Submit changes" />

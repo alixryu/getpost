@@ -3,6 +3,7 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from getpost.models import Account, Student
 from getpost.orm import Session
+from .prefects import logout_required, form_require
 
 
 boats_blueprint = Blueprint('boats', __name__, url_prefix='/signup')
@@ -10,41 +11,34 @@ boats_blueprint = Blueprint('boats', __name__, url_prefix='/signup')
 SALT_ROUNDS = 12
 
 
+@logout_required()
 @boats_blueprint.route('/', methods={'GET', 'POST'})
 def boats_index():
-    if 'logged_in' in session:
-        return redirect('/', 303)
     return render_template('boats.html')
 
 
+@logout_required()
+@form_require({'email', 'password', 'tnum'}, methods={'POST'})
 @boats_blueprint.route('/new/', methods={'GET', 'POST'})
 def boats_new():
-    if 'logged_in' in session:
-        return redirect('/', 303)
-    required_params = {'email', 'password', 'tnum'}
-    provided_params = set(request.form)
-    if required_params <= provided_params:
-        return activate_student(request.form)
-    else:
-        missing_params = required_params - provided_params
-        flash('The following parameters were missing: {}'.format(', '.join(missing_params)))
-    return redirect('/signup/', 307)
-
-def activate_student(form):
-    email, tnum, password = form['email'], form['tnum'], form['password']
+    email, tnum, password = request.form['email'], request.form['tnum'], request.form['password']
+    if tnum[0] == 'T':
+        tnum = tnum[1:]
     try:
-        account = Session.query(Account).filter(Account.email_address == email).one()
+        db_session = Session()
+        account = db_session.query(Account).filter(Account.email_address == email).one()
         if account.verified:
             flash('An account for {} has already been created'.format(email), 'error')
         if account.role != 'student':
             flash('The email {} does not appear to be associated with a student'.format(email), 'error')
-        if not account.verified and account.role == 'student':
-            student = Session.query(Student).get(account.id)
+        if len(password) < 6:
+            flash('Password too short', 'error')
+        if not account.verified and account.role == 'student' and len(password) >= 6:
+            student = db_session.query(Student).get(account.id)
             if student:
                 account.set_password(password)
                 account.verified = True
-                student.alternative_name = student.first_name
-                Session.commit()
+                db_session.commit()
                 account.log_in()
                 flash('Your account was created succesfully!', 'success')
                 return redirect('/', 303)
