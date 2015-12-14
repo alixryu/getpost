@@ -1,0 +1,3 @@
+.inputform input[type="email"][disabled], input[type="text"][disabled], input[type="password"][disabled] {
+    color: #330000;
+}

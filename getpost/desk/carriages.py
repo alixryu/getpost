@@ -39,11 +39,23 @@ def validate_login(form):
             session['logged_in'] = True
             session['email'] = account.email_address
             session['role'] = account.role
+            session['id'] = account.id
             if account.role == 'student':
                 student = Session.query(Student).get(account.id)
                 if student:
                     session['first_name'] = student.first_name
                     session['last_name'] = student.last_name
+                    session['alternative_name'] = student.alternative_name
+            elif account.role == 'employee':
+                employee = Session.query(Employee).get(account.id)
+                if employee:
+                    session['first_name'] = employee.first_name
+                    session['last_name'] = employee.last_name
+            elif account.role == 'administrator':
+                admin = Session.query(administrator).get(account.id)
+                if admin:
+                    session['first_name'] = admin.first_name
+                    session['last_name'] = admin.last_name
             flash('Login successful!', 'success')
             return redirect('/', 303)
     except NoResultFound:

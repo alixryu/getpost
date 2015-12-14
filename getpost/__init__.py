@@ -43,7 +43,8 @@ def create_app(config_obj):
 
     css_codenames = {'template.css': 'maraudersmap.css',
                      'home.css': 'hogwarts.css',
-                     'forms.css': 'scrolls.css'}
+                     'forms.css': 'scrolls.css',
+                     'edituser.css': 'transfigure.css'}
     @app.route('/css/<path:path>')
     def send_css(path):
         if path in css_codenames:

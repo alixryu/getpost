@@ -56,4 +56,4 @@ def professors_all():
 
 @professors_blueprint.route('/view/me/')
 def professors_user():
-    return render_template('professors.html')
+    return render_template('transfigure.html')

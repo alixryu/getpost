@@ -15,4 +15,4 @@ def headmaster_all():
 
 @headmaster_blueprint.route('/view/me/')
 def headmaster_user():
-    return render_template('headmaster.html')
+    return render_template('transfigure.html')

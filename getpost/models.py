@@ -10,6 +10,8 @@ from bcrypt import hashpw, gensalt
 
 from .orm import Base
 
+from flask import session
+
 
 class Package(Base):
     __tablename__ = 'package'
@@ -51,6 +53,15 @@ class Account(Base):
 
     def check_password(self, password):
         return self.password == hashpw(bytes(password, 'ASCII'), self.password)
+
+    def log_in(self):
+        session['logged_in'] = True
+        session['id'] = self.id
+        session['role'] = self.role
+        session['email_address'] = self.email_address
+
+    def log_out(self):
+
 
 
 class Administrator(Base):
