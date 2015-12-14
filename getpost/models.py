@@ -46,7 +46,10 @@ class Account(Base):
     role = Column(
         Enum('student', 'employee', 'administrator', name='account_type')
     )
+
     student = relationship('Student', uselist=False, back_populates='account')
+    employee = relationship('Employee', uselist=False, back_populates='account')
+    admin = relationship('Administrator', uselist=False, back_populates='account')
 
     def set_password(self, password):
         self.password = hashpw(bytes(password, 'ASCII'), gensalt())
@@ -71,6 +74,8 @@ class Administrator(Base):
     first_name = Column(String)
     last_name = Column(String)
 
+    account = relationship('Account', back_populates='admin')
+
 
 class Employee(Base):
     __tablename__ = 'employee'
@@ -78,6 +83,8 @@ class Employee(Base):
     id = Column(Integer, ForeignKey('account.id'), primary_key=True)
     first_name = Column(String)
     last_name = Column(String)
+
+    account = relationship('Account', back_populates='employee')
 
 
 class Student(Base):
