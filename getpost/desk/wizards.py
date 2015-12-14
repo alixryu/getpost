@@ -123,6 +123,8 @@ def attempt_update(account, student, form):
                 account.email_address = value
                 updates['email_address'] = value
             elif field == 'tnum':
+                if value[0] == 'T':
+                    value = value[1:]
                 student.t_number = value
                 updates['t_number'] = value
             elif field == 'fname':
