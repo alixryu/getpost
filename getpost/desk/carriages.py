@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, session, redirect, request, flash
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
-from getpost.models import Account, Student
+from getpost.models import Account
 from getpost.orm import Session
 
 
@@ -36,26 +36,7 @@ def validate_login(form):
         elif not account.check_password(password):
             flash('Invalid email/password combination', 'error')
         else:
-            session['logged_in'] = True
-            session['email'] = account.email_address
-            session['role'] = account.role
-            session['id'] = account.id
-            if account.role == 'student':
-                student = Session.query(Student).get(account.id)
-                if student:
-                    session['first_name'] = student.first_name
-                    session['last_name'] = student.last_name
-                    session['alternative_name'] = student.alternative_name
-            elif account.role == 'employee':
-                employee = Session.query(Employee).get(account.id)
-                if employee:
-                    session['first_name'] = employee.first_name
-                    session['last_name'] = employee.last_name
-            elif account.role == 'administrator':
-                admin = Session.query(administrator).get(account.id)
-                if admin:
-                    session['first_name'] = admin.first_name
-                    session['last_name'] = admin.last_name
+            account.log_in()
             flash('Login successful!', 'success')
             return redirect('/', 303)
     except NoResultFound:
@@ -69,7 +50,13 @@ def validate_login(form):
 @carriages_blueprint.route('/out/')
 def carriages_out():
     if 'logged_in' in session:
-        for key in {'logged_in', 'role', 'first_name', 'last_name', 'email'}:
-            session.pop(key, None)
-        flash('Logout successful!', 'success')
+        if 'id' in session:
+            account = Session.query(Account).get(session['id'])
+            if account:
+                account.log_out()
+                flash('Logout successful!', 'success')
+            else:
+                session.clear()
+        else:
+            session.clear()
     return redirect('/', 303)

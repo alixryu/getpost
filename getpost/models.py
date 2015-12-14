@@ -49,7 +49,7 @@ class Account(Base):
 
     student = relationship('Student', uselist=False, back_populates='account')
     employee = relationship('Employee', uselist=False, back_populates='account')
-    admin = relationship('Administrator', uselist=False, back_populates='account')
+    administrator = relationship('Administrator', uselist=False, back_populates='account')
 
     def set_password(self, password):
         self.password = hashpw(bytes(password, 'ASCII'), gensalt())
@@ -57,14 +57,32 @@ class Account(Base):
     def check_password(self, password):
         return self.password == hashpw(bytes(password, 'ASCII'), self.password)
 
+    def get_person(self):
+        if self.role == 'student':
+            return self.student
+        elif self.role == 'employee':
+            return self.employee
+        elif self.role == 'administrator':
+            return self.administrator
+        else:
+            return None
+
+
     def log_in(self):
         session['logged_in'] = True
         session['id'] = self.id
         session['role'] = self.role
         session['email_address'] = self.email_address
+        person = self.get_person()
+        if person:
+            person.log_in()
 
     def log_out(self):
-
+        for attribute in ('logged_in', 'id', 'role', 'email_address'):
+            session.pop(attribute, None)
+        person = self.get_person()
+        if person:
+            person.log_out()
 
 
 class Administrator(Base):
@@ -74,7 +92,15 @@ class Administrator(Base):
     first_name = Column(String)
     last_name = Column(String)
 
-    account = relationship('Account', back_populates='admin')
+    account = relationship('Account', back_populates='administrator')
+
+    def log_in(self):
+        session['first_name'] = self.first_name
+        session['last_name'] = self.last_name
+
+    def log_out(self):
+        for attribute in ('first_name', 'last_name'):
+            session.pop(attribute, None)
 
 
 class Employee(Base):
@@ -85,6 +111,14 @@ class Employee(Base):
     last_name = Column(String)
 
     account = relationship('Account', back_populates='employee')
+
+    def log_in(self):
+        session['first_name'] = self.first_name
+        session['last_name'] = self.last_name
+
+    def log_out(self):
+        for attribute in ('first_name', 'last_name'):
+            session.pop(attribute, None)
 
 
 class Student(Base):
@@ -98,3 +132,14 @@ class Student(Base):
     t_number = Column(Integer)
 
     account = relationship('Account', back_populates='student')
+
+    def log_in(self):
+        session['first_name'] = self.first_name
+        session['last_name'] = self.last_name
+        session['alternative_name'] = self.alternative_name
+        session['ocmr'] = self.ocmr
+        session['tnum'] = self.t_number
+
+    def log_out(self):
+        for attribute in ('first_name', 'last_name', 'alternative_name', 'ocmr', 'tnum'):
+            session.pop(attribute, None)

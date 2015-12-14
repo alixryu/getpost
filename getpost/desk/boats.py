@@ -43,12 +43,9 @@ def activate_student(form):
             if student:
                 account.set_password(password)
                 account.verified = True
+                student.alternative_name = student.first_name
                 Session.commit()
-                session['logged_in'] = True
-                session['role'] = 'student'
-                session['first_name'] = student.first_name
-                session['last_name'] = student.last_name
-                session['email'] = account.email_address
+                account.log_in()
                 flash('Your account was created succesfully!', 'success')
                 return redirect('/', 303)
             else:
