@@ -5,33 +5,34 @@ from functools import wraps
 from re import fullmatch
 
 validation_matches = {
-    'fname': r"[a-zA-Z '-]+",
-    'lname': r"[a-zA-Z '-]+",
-    'aname': r"[a-zA-Z '-]*",
-    'tnum': r'T?[0-9]{8}',
-    'email': r'.+@.+\..+',
-    'password': r'.{6,}'
+    'first_name': "([a-zA-Z '-]+)",
+    'last_name': "([a-zA-Z '-]+)",
+    'alternative_name': "([a-zA-Z '-]*)",
+    't_number': 'T?([0-9]{8})',
+    'email_address': r'(.+@.+\..+)',
+    'password': '(.{6,})'
 }
 
 validation_messages = {
-    'fname': 'First name may only contain letters, spaces, apostrophes, and hyphens',
-    'lname': 'Last name may only contain letters, spaces, apostrophes, and hyphens',
-    'aname': 'Alternative name may only contain letters, spaces, apostrophes, and hyphens',
-    'tnum': 'T number must contain exactly eight letters, optionally preceded by a capital "T"',
-    'email': 'Invalid email address',
+    'first_name': 'First name may only contain letters, spaces, apostrophes, and hyphens',
+    'last_name': 'Last name may only contain letters, spaces, apostrophes, and hyphens',
+    'alternative_name': 'Alternative name may only contain letters, spaces, apostrophes, and hyphens',
+    't_number': 'T number must contain exactly eight letters, optionally preceded by a capital "T"',
+    'email_address': 'Invalid email address',
     'password': 'Passwords must be at least six characters long'
 }
 
-# Validate data when updating.
-def validate_student_field(field, value, notify=True, strict=True):
+# Validate data when updating, and return a sanitized version.
+def validate_field(field, value, notify=True, strict=True):
     if field in validation_matches:
-        if fullmatch(validation_matches[field], value):
-            return True
+        match = fullmatch(validation_matches[field], value)
+        if match:
+            return ''.join(match.groups())
         else:
             if notify:
                 flash(validation_messages[field], 'error')
-            return False
-    return not strict
+            return None
+    return None if strict else ''
 
 # Determine whether or the current user is logged in.
 def is_logged_in():

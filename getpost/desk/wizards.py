@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, request, redirect, flash, abort, s
 from . import ACCOUNT_PER_PAGE as page_size
 from ..models import Account, Student
 from ..orm import Session
-from .prefects import login_required, user_session_require, roles_required, roles_or_match_required, validate_student_field
+from .prefects import login_required, user_session_require, roles_required, roles_or_match_required, validate_field
 
 
 wizards_blueprint = Blueprint(
@@ -14,16 +14,67 @@ wizards_blueprint = Blueprint(
     url_prefix='/students'
 )
 
-editable = {
-    'student': {'aname', 'email'},
-    'employee': {'fname', 'lname', 'tnum', 'aname', 'email'},
-    'administrator': {'fname', 'lname', 'tnum', 'aname', 'email'}
+READ_ONLY = {
+    'match': ('first_name', 'last_name', 'ocmr', 't_number'),
+    'employee': (),
+    'administrator': ()
 }
 
-viewable = {
-    'person': {'first_name', 'last_name', 'alternative_name', 'ocmr', 't_number'},
-    'account': {'email_address'}
+READ_WRITE = {
+    'match': ('alternative_name', 'email_address'),
+    'employee': ('verified', 'first_name', 'last_name', 'ocmr', 't_number', 'alternative_name', 'email_address'),
+    'administrator': ('verified', 'first_name', 'last_name', 'ocmr', 't_number', 'alternative_name', 'email_address')
 }
+
+INPUT_FIELDS = {
+    'first_name': {
+        'type': 'text',
+        'title': 'First Name',
+        'pattern': "[a-zA-Z '-]+"
+    },
+    'last_name': {
+        'type': 'text',
+        'title': 'Last Name',
+        'pattern': "[a-zA-Z '-]+"
+    },
+    'alternative_name': {
+        'type': 'text',
+        'title': 'Preferred Name',
+        'pattern': "[a-zA-Z '-]+"
+    },
+    'email_address': {
+        'type': 'email',
+        'title': 'Email Address',
+        'pattern': r'.+@.+\..+'
+    },
+    't_number': {
+        'type': 'text',
+        'title': 'T number',
+        'pattern': 'T?[0-9]{8}'
+    },
+    'ocmr': {
+        'type': 'text',
+        'title': 'OCMR number',
+        'pattern': '[0-9]{1,4}'
+    },
+    'verified': {
+        'type': 'checkbox',
+        'title': 'Verified'
+    }
+}
+
+def get_read_only(account):
+    if account.id == user_session['id']:
+        return READ_ONLY['match']
+    else:
+        return READ_ONLY.get(user_session['role'], [])
+
+def get_read_write(account):
+    if account.id == user_session['id']:
+        return READ_WRITE['match']
+    else:
+        return READ_WRITE.get(user_session['role'], [])
+
 
 @wizards_blueprint.route('/')
 @login_required()
@@ -78,12 +129,26 @@ def wizards_view(id):
         db_session.close()
         abort(404)
     student = account.student
-    student_dict = {}
-    student_dict.update(account.as_dict(viewable['account']))
-    student_dict.update(student.as_dict(viewable['person']))
-    template_editable = editable.get(user_session['role'], set())
+    read, write = get_read_only(account), get_read_write(account)
+    fields = INPUT_FIELDS.copy()
+    values = {}
+    values.update(account.as_dict(read + write))
+    values.update(student.as_dict(read + write))
+    for name, value in values.items():
+        if name in fields:
+            if name in read and (value is None or value == ''):
+                fields[name]['value'] = 'None listed'
+            elif type(value) in {int, str}:
+                fields[name]['value'] = value
+            elif type(value) == bool:
+                if name == 'verified':
+                    fields[name]['checked'] = value
+                    fields[name]['label'] = True
     db_session.close()
-    return render_template('transfigurewizard.html', student=student_dict, editable=template_editable)
+    return render_template(
+        'transfigure.html', action='edit/', method='POST', read=read,
+        write=write, fields=fields, role='Student'
+    )
 
 @wizards_blueprint.route('/<int:id>/edit/', methods={'POST'})
 @login_required()
@@ -96,22 +161,27 @@ def wizards_edit(id):
         abort(404)
     student = account.student
     if student:
-        allowed_fields = editable.get(user_session['role'], set())
+        denied_fields = set(get_read_only(account))
+        allowed_fields = set(get_read_write(account))
         requested_fields = set(request.form)
-        if requested_fields <= allowed_fields:
-            if attempt_update(account, student, request.form):
-                flash('Account updated successfully!', 'success')
-                db_session.commit()
-                db_session.close()
+        if not denied_fields.intersection(requested_fields):
+            edit_fields = {field: request.form[field] for field in request.form if field in allowed_fields}
+            if not edit_fields:
+                flash('No update parameters given', 'error')
             else:
-                db_session.rollback()
-                db_session.close()
+                if attempt_update(account, student, edit_fields):
+                    flash('Account updated successfully!', 'success')
+                    db_session.commit()
+                else:
+                    db_session.rollback()
+            db_session.close()
             return redirect("/students/{}/".format(id), 303)
         else:
-            denied_fields = requested_fields - allowed_fields
-            flash("Cannot edit the following fields for this student: {}".format(', ').join(denied_fields), 'error')
-            return redirect("/students/{}/".format(id), 303)
+            db_session.close()
+            flash("Cannot edit the following fields for this students: {}".format(', ').join(denied_fields.intersection(requested_fields)), 'error')
+            return redirect("/employee/{}/".format(id), 303)
     else:
+        db_session.close()
         flash('Could locate corresponding student object in database', 'error')
         return redirect('/', 303)
 
@@ -119,24 +189,28 @@ def attempt_update(account, student, form):
     success = True
     updates = {}
     for field, value in form.items():
-        if validate_student_field(field, value):
-            if field == 'email':
-                account.email_address = value
-                updates['email_address'] = value
-            elif field == 'tnum':
+        validated = validate_field(field, value)
+        if validated is not None:
+            if field == 'email_address':
+                account.email_address = validated
+                updates['email_address'] = validated
+            elif field == 't_number':
                 if value[0] == 'T':
                     value = value[1:]
-                student.t_number = value
-                updates['t_number'] = value
-            elif field == 'fname':
-                student.first_name = value
-                updates['first_name'] = value
-            elif field == 'lname':
-                student.last_name = value
-                updates['last_name'] = value
-            elif field == 'aname':
-                student.alternative_name = value
-                updates['alternative_name'] = value
+                student.t_number = validated
+                updates['t_number'] = validated
+            elif field == 'first_name':
+                student.first_name = validated
+                updates['first_name'] = validated
+            elif field == 'last_name':
+                student.last_name = validated
+                updates['last_name'] = validated
+            elif field == 'alternative_name':
+                student.alternative_name = validated
+                updates['alternative_name'] = validated
+            else:
+                flash("Cannot update {} field".format(field), 'error')
+                success = False
         else:
             success = False
     if success and user_session['id'] == account.id:

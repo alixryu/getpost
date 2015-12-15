@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, request, redirect, flash, abort, s
 from . import ACCOUNT_PER_PAGE as page_size
 from ..models import Account, Employee
 from ..orm import Session
-from .prefects import login_required, user_session_require, roles_required, roles_or_match_required, validate_student_field
+from .prefects import login_required, user_session_require, roles_required, roles_or_match_required, validate_field
 
 
 professors_blueprint = Blueprint(
@@ -15,7 +15,7 @@ professors_blueprint = Blueprint(
 )
 
 READ_ONLY = {
-    'match': ('verified', ),
+    'match': ('verified',),
     'employee': ('verified', 'first_name', 'last_name', 'email_address'),
     'administrator': ()
 }
@@ -28,25 +28,21 @@ READ_WRITE = {
 
 INPUT_FIELDS = {
     'first_name': {
-        # 'name': 'fname',
         'type': 'text',
         'title': 'First Name',
         'pattern': "[a-zA-Z '-]+"
     },
     'last_name': {
-        # 'name': 'lname',
         'type': 'text',
         'title': 'Last Name',
         'pattern': "[a-zA-Z '-]+"
     },
     'email_address': {
-        # 'name': 'email',
         'type': 'email',
         'title': 'Email Address',
         'pattern': r'.+@.+\..+'
     },
     'verified': {
-        # 'name': 'verified',
         'type': 'checkbox',
         'title': 'Verified'
     }
@@ -117,10 +113,12 @@ def professors_view(id):
         abort(404)
     employee = account.employee
     read, write = get_read_only(account), get_read_write(account)
+    print(read)
+    print(write)
     fields = INPUT_FIELDS.copy()
     values = {}
-    values.update(account.as_dict())
-    values.update(employee.as_dict())
+    values.update(account.as_dict(read + write))
+    values.update(employee.as_dict(read + write))
     for name, value in values.items():
         if name in fields:
             if type(value) == str:
@@ -156,10 +154,9 @@ def professors_edit(id):
             if attempt_update(account, employee, edit_fields):
                 flash('Account updated successfully!', 'success')
                 db_session.commit()
-                db_session.close()
             else:
-                db_session.rollback()
                 db_session.close()
+            db_session.rollback()
             return redirect("/employees/{}/".format(id), 303)
         else:
             db_session.close()
@@ -174,16 +171,17 @@ def attempt_update(account, employee, form):
     success = True
     updates = {}
     for field, value in form.items():
-        if True or validate_student_field(field, value):
+        validated = validate_field(field, value)
+        if validated is not None:
             if field == 'email_address':
-                account.email_address = value
-                updates['email_address'] = value
+                account.email_address = validated
+                updates['email_address'] = validated
             elif field == 'first_name':
-                employee.first_name = value
-                updates['first_name'] = value
+                employee.first_name = validated
+                updates['first_name'] = validated
             elif field == 'last_name':
-                employee.last_name = value
-                updates['last_name'] = value
+                employee.last_name = validated
+                updates['last_name'] = validated
             else:
                 print("Unrecognized field: {}".format(field))
         else:
