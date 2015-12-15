@@ -15,13 +15,19 @@ class Package(Base):
     __tablename__ = 'package'
 
     id = Column(Integer, primary_key=True)
-    student_id = Column(String)
+    student_id = Column(Integer, ForeignKey('student.id'))
     arrival_date = Column(DateTime)
     pickup_date = Column(DateTime)
     received_by = Column(String)
     status = Column(
         Enum('picked_up', 'not_picked_up', name='package_status_type')
     )
+
+    student = relationship(
+        'Student',
+        lazy='joined'
+        )
+    notifications = relationship('Notification')
 
 
 class Notification(Base):
@@ -31,7 +37,9 @@ class Notification(Base):
     package_id = Column(Integer, ForeignKey('package.id'))
     email_address = Column(String)
     send_date = Column(DateTime)
-    send_count = Column(DateTime)
+    send_count = Column(Integer)
+
+    package = relationship('Package')
 
 
 class Account(Base):
@@ -44,7 +52,8 @@ class Account(Base):
     role = Column(
         Enum('student', 'employee', 'administrator', name='account_type')
     )
-    student = relationship('Student', uselist=False, back_populates='account')
+
+    student = relationship('Student', uselist=False)
 
     def set_password(self, password):
         self.password = hashpw(bytes(password, 'ASCII'), gensalt())
@@ -79,4 +88,8 @@ class Student(Base):
     ocmr = Column(String)
     t_number = Column(Integer)
 
-    account = relationship('Account', back_populates='student')
+    account = relationship('Account')
+    packages = relationship(
+        'Package',
+        lazy='joined'
+        )

@@ -1,0 +1,9 @@
+{% extends "owls.html" %}
+
+{% block subcontent %}
+    <ul>
+        {% for notification in notifications %}
+            <p>{{ notification }}</p>
+        {% endfor %}
+    </ul>
+{% endblock %}

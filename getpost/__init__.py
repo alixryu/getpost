@@ -1,5 +1,9 @@
-from flask import Flask, render_template, send_from_directory
 from os.path import join, dirname, abspath
+
+from flask import Flask, render_template, send_from_directory
+from flask.ext.mail import Mail
+
+mail = Mail()
 
 from .desk.hogwarts import hogwarts_blueprint
 from .desk.boats import boats_blueprint
@@ -24,13 +28,14 @@ def create_app(config_obj):
     app.register_blueprint(professors_blueprint)
     app.register_blueprint(headmaster_blueprint)
 
+    mail.init_app(app)
+
     @app.errorhandler(500)
     def internal(error):
         desc = 'Uh oh! Something went wrong.'
         return render_template(
             'voldemort.html', status=500, description=desc
         ), 500
-
 
     @app.errorhandler(404)
     def not_found(error):
@@ -44,6 +49,7 @@ def create_app(config_obj):
     css_codenames = {'template.css': 'maraudersmap.css',
                      'home.css': 'hogwarts.css',
                      'forms.css': 'scrolls.css'}
+
     @app.route('/css/<path:path>')
     def send_css(path):
         if path in css_codenames:
@@ -51,6 +57,7 @@ def create_app(config_obj):
         return send_from_directory(join(static_directory, 'css/'), path)
 
     js_codenames = {'signup.js': 'boats.js'}
+
     @app.route('/js/<path:path>')
     def send_js(path):
         if path in js_codenames:
