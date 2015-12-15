@@ -28,7 +28,7 @@ def add_student(first_name='Test', last_name='Student', alternative_name='Obie',
 
 def add_employee():
     id = add_account(email_address='employee@oberlin.edu', role='employee')
-    employee = Employee(id=id, first_name='Test', last_name='Account')
+    employee = Employee(id=id, first_name='Test', last_name='Employee')
     Session.add(employee)
 
 def add_admin():

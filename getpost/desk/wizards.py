@@ -74,15 +74,16 @@ def wizards_self():
 def wizards_view(id):
     db_session = Session()
     account = db_session.query(Account).get(id)
-    if account.role != 'student':
+    if not (account and account.role == 'student'):
+        db_session.close()
         abort(404)
     student = account.student
     student_dict = {}
     student_dict.update(account.as_dict(viewable['account']))
     student_dict.update(student.as_dict(viewable['person']))
-    db_session.close()
     template_editable = editable.get(user_session['role'], set())
-    return render_template('transfigure.html', student=student_dict, editable=template_editable)
+    db_session.close()
+    return render_template('transfigurewizard.html', student=student_dict, editable=template_editable)
 
 @wizards_blueprint.route('/<int:id>/edit/', methods={'POST'})
 @login_required()
@@ -138,6 +139,6 @@ def attempt_update(account, student, form):
                 updates['alternative_name'] = value
         else:
             success = False
-    if success:
+    if success and user_session['id'] == account.id:
         user_session.update(updates)
     return success

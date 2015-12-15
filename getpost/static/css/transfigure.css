@@ -1,3 +1,15 @@
 .inputform input[type="email"][disabled], input[type="text"][disabled], input[type="password"][disabled] {
     color: #330000;
+    background-color: inherit;
+    border: none;
+    font-weight: bold;
+}
+
+.inputform input[type="checkbox"] {
+    position: relative;
+    top: 3px;
+}
+
+.verified div {
+    display: inline;
 }
