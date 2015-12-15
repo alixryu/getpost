@@ -10,6 +10,8 @@ from bcrypt import hashpw, gensalt
 
 from .orm import Base
 
+from flask import session as user_session
+
 
 class Package(Base):
     __tablename__ = 'package'
@@ -44,13 +46,42 @@ class Account(Base):
     role = Column(
         Enum('student', 'employee', 'administrator', name='account_type')
     )
+
     student = relationship('Student', uselist=False, back_populates='account')
+    employee = relationship('Employee', uselist=False, back_populates='account')
+    administrator = relationship('Administrator', uselist=False, back_populates='account')
+
+    login_attributes = {'id', 'role', 'email_address'}
 
     def set_password(self, password):
         self.password = hashpw(bytes(password, 'ASCII'), gensalt())
 
     def check_password(self, password):
         return self.password == hashpw(bytes(password, 'ASCII'), self.password)
+
+    def get_person(self):
+        if self.role == 'student':
+            return self.student
+        elif self.role == 'employee':
+            return self.employee
+        elif self.role == 'administrator':
+            return self.administrator
+        else:
+            return None
+
+
+    def log_in(self):
+        user_session.update(self.as_dict(Account.login_attributes))
+        person = self.get_person()
+        if person:
+            person.log_in()
+
+    def log_out(self):
+        for attribute in Account.login_attributes:
+            user_session.pop(attribute, None)
+        person = self.get_person()
+        if person:
+            person.log_out()
 
 
 class Administrator(Base):
@@ -60,6 +91,17 @@ class Administrator(Base):
     first_name = Column(String)
     last_name = Column(String)
 
+    account = relationship('Account', back_populates='administrator')
+
+    login_attributes = {'first_name', 'last_name'}
+
+    def log_in(self):
+        user_session.update(self.as_dict(Administrator.login_attributes))
+
+    def log_out(self):
+        for attribute in Administrator.login_attributes:
+            user_session.pop(attribute, None)
+
 
 class Employee(Base):
     __tablename__ = 'employee'
@@ -67,6 +109,17 @@ class Employee(Base):
     id = Column(Integer, ForeignKey('account.id'), primary_key=True)
     first_name = Column(String)
     last_name = Column(String)
+
+    account = relationship('Account', back_populates='employee')
+
+    login_attributes = {'first_name', 'last_name'}
+
+    def log_in(self):
+        user_session.update(self.as_dict(Employee.login_attributes))
+
+    def log_out(self):
+        for attribute in Employee.login_attributes:
+            user_session.pop(attribute, None)
 
 
 class Student(Base):
@@ -80,3 +133,14 @@ class Student(Base):
     t_number = Column(Integer)
 
     account = relationship('Account', back_populates='student')
+
+    login_attributes = {
+        'first_name', 'last_name', 'alternative_name', 'ocmr', 't_number'
+    }
+
+    def log_in(self):
+        user_session.update(self.as_dict(Student.login_attributes))
+
+    def log_out(self):
+        for attribute in Student.login_attributes:
+            user_session.pop(attribute, None)

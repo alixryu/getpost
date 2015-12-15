@@ -15,18 +15,20 @@
             <span class="headertext"><a href="/">GetPost</a></span>
             <span class="login">
                 <ul class="headerlist">
-                    {% if 'logged_in' in session: %}
+                    {% if is_logged_in(): %}
                         {% if session['first_name'] %}
-                            <li>Welcome back, {{ session['first_name'] }}!</li>
+                            <li>Welcome back,
+                                {{ session['alternative_name'] or session['first_name'] }}!
+                            </li>
                         {% else %}
                             <li>Welcome back!</li>
                         {% endif %} |
                         {% if session['role'] == 'student' %}
-                            <li><a href="/students/view/me">Account</a></li> |
+                            <li><a href="/students/me/">Account</a></li> |
                         {% elif session['role'] == 'employee' %}
-                            <li><a href="/employees/view/me">Account</a></li> |
+                            <li><a href="/employees/me/">Account</a></li> |
                         {% elif session['role'] == 'administrator' %}
-                            <li><a href="/admin/view/me">Account</a></li> |
+                            <li><a href="/admin/me/">Account</a></li> |
                         {% endif %}
                         <li><a href="/auth/out/">Log out</a></li>
                     {% else: %}
@@ -35,7 +37,7 @@
                     {% endif %}
                 </ul>
             </span>
-            {% if 'logged_in' in session: %}
+            {% if is_logged_in(): %}
                 <span class="headertools">
                     <ul class="headerlist">
                         {% if session['role'] == 'student' %}
@@ -44,13 +46,13 @@
                         {% elif session['role'] == 'employee' %}
                             <li><a href="/email/">Email</a></li> |
                             <li><a href="/packages/">Packages</a></li> |
-                            <li><a href="/students/view/all/">Students</a></li>
+                            <li><a href="/students/">Students</a></li>
                         {% elif session['role'] == 'administrator' %}
                             <li><a href="/email/">Email</a></li> |
                             <li><a href="/packages/">Packages</a></li> |
-                            <li><a href="/students/view/all/">Students</a></li> |
-                            <li><a href="/employees/view/all/">Employees</a></li> |
-                            <li><a href="/admin/view/all">Administrators</a></li>
+                            <li><a href="/students/">Students</a></li> |
+                            <li><a href="/employees/">Employees</a></li> |
+                            <li><a href="/admin/">Administrators</a></li>
                         {% endif %}
                     </ul>
                 </span>
