@@ -2,38 +2,6 @@ from flask import abort, redirect, flash, request, session as user_session
 
 from functools import wraps
 
-from re import fullmatch
-
-validation_matches = {
-    'first_name': "([a-zA-Z '-]+)",
-    'last_name': "([a-zA-Z '-]+)",
-    'alternative_name': "([a-zA-Z '-]*)",
-    't_number': 'T?([0-9]{8})',
-    'email_address': r'(.+@.+\..+)',
-    'password': '(.{6,})'
-}
-
-validation_messages = {
-    'first_name': 'First name may only contain letters, spaces, apostrophes, and hyphens',
-    'last_name': 'Last name may only contain letters, spaces, apostrophes, and hyphens',
-    'alternative_name': 'Alternative name may only contain letters, spaces, apostrophes, and hyphens',
-    't_number': 'T number must contain exactly eight letters, optionally preceded by a capital "T"',
-    'email_address': 'Invalid email address',
-    'password': 'Passwords must be at least six characters long'
-}
-
-# Validate data when updating, and return a sanitized version.
-def validate_field(field, value, notify=True, strict=True):
-    if field in validation_matches:
-        match = fullmatch(validation_matches[field], value)
-        if match:
-            return ''.join(match.groups())
-        else:
-            if notify:
-                flash(validation_messages[field], 'error')
-            return None
-    return None if strict else ''
-
 # Determine whether or the current user is logged in.
 def is_logged_in():
     return 'id' in user_session
@@ -84,8 +52,11 @@ def user_session_require(required_fields, notify=True, wipe=True, url=None):
     return intermediary
 
 # Make sure a submitted form contains the given fields.
-def form_require(required_fields, methods={'GET', 'POST'}, notify=True, wipe=True, url='/'):
-    methods = {method.upper() for method in methods}
+def form_require(required_fields, methods=None, notify=True, wipe=True, url='/'):
+    if methods is None:
+        methods = {'GET', 'POST'}
+    else:
+        methods = {method.upper() for method in methods}
     def intermediary(func):
         @wraps(func)
         def result(*args, **kwargs):
@@ -110,6 +81,7 @@ def form_require(required_fields, methods={'GET', 'POST'}, notify=True, wipe=Tru
 def roles_required(roles, url=None):
     def intermediary(func):
         @wraps(func)
+        @user_session_require({'role'})
         def result(*args, **kwargs):
             if user_session['role'] in roles:
                 return func(*args, **kwargs)
@@ -134,6 +106,7 @@ def match_id(url=None):
 def roles_or_match_required(roles, url=None):
     def intermediary(func):
         @wraps(func)
+        @user_session_require({'role'})
         def result(*args, **kwargs):
             if kwargs['id'] == user_session['id'] or user_session['role'] in roles:
                 return func(*args, **kwargs)

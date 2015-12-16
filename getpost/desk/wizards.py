@@ -1,12 +1,13 @@
 from math import ceil
+from copy import deepcopy
 
 from flask import Blueprint, render_template, request, redirect, flash, abort, session as user_session
 
 from . import ACCOUNT_PER_PAGE as page_size
 from ..models import Account, Student
 from ..orm import Session
-from .prefects import login_required, user_session_require, roles_required, roles_or_match_required, validate_field
-
+from .prefects import login_required, roles_required, roles_or_match_required
+from .transfigure import view_user, edit_user
 
 wizards_blueprint = Blueprint(
     'wizards',
@@ -63,14 +64,14 @@ INPUT_FIELDS = {
     }
 }
 
-def get_read_only(account):
-    if account.id == user_session['id']:
+def get_read_only(id):
+    if id == user_session['id'] and 'match' in READ_ONLY:
         return READ_ONLY['match']
     else:
         return READ_ONLY.get(user_session['role'], [])
 
-def get_read_write(account):
-    if account.id == user_session['id']:
+def get_read_write(id):
+    if id == user_session['id'] and 'match' in READ_WRITE:
         return READ_WRITE['match']
     else:
         return READ_WRITE.get(user_session['role'], [])
@@ -78,7 +79,6 @@ def get_read_write(account):
 
 @wizards_blueprint.route('/')
 @login_required()
-@user_session_require({'role'})
 def wizards_index():
     if user_session['role'] == 'student':
         return redirect('/students/me/', 303)
@@ -113,106 +113,21 @@ def wizards_index():
 
 @wizards_blueprint.route('/me/')
 @login_required('/auth/')
-@user_session_require({'role'})
 @roles_required({'student'}, '/')
 def wizards_self():
     return redirect("/students/{}/".format(user_session['id']), 303)
 
 @wizards_blueprint.route('/<int:id>/')
 @login_required()
-@user_session_require({'role'})
 @roles_or_match_required({'employee', 'administrator'})
 def wizards_view(id):
-    db_session = Session()
-    account = db_session.query(Account).get(id)
-    if not (account and account.role == 'student'):
-        db_session.close()
-        abort(404)
-    student = account.student
-    read, write = get_read_only(account), get_read_write(account)
-    fields = INPUT_FIELDS.copy()
-    values = {}
-    values.update(account.as_dict(read + write))
-    values.update(student.as_dict(read + write))
-    for name, value in values.items():
-        if name in fields:
-            if name in read and (value is None or value == ''):
-                fields[name]['value'] = 'None listed'
-            elif type(value) in {int, str}:
-                fields[name]['value'] = value
-            elif type(value) == bool:
-                if name == 'verified':
-                    fields[name]['checked'] = value
-                    fields[name]['label'] = True
-    db_session.close()
-    return render_template(
-        'transfigure.html', action='edit/', method='POST', read=read,
-        write=write, fields=fields, role='Student'
-    )
+    read, write = get_read_only(id), get_read_write(id)
+    fields = deepcopy(INPUT_FIELDS)
+    return view_user(id, 'student', read, write, fields)
 
 @wizards_blueprint.route('/<int:id>/edit/', methods={'POST'})
 @login_required()
-@user_session_require({'role'})
 @roles_or_match_required({'employee', 'administrator'})
 def wizards_edit(id):
-    db_session = Session()
-    account = db_session.query(Account).get(id)
-    if account.role != 'student':
-        abort(404)
-    student = account.student
-    if student:
-        denied_fields = set(get_read_only(account))
-        allowed_fields = set(get_read_write(account))
-        requested_fields = set(request.form)
-        if not denied_fields.intersection(requested_fields):
-            edit_fields = {field: request.form[field] for field in request.form if field in allowed_fields}
-            if not edit_fields:
-                flash('No update parameters given', 'error')
-            else:
-                if attempt_update(account, student, edit_fields):
-                    flash('Account updated successfully!', 'success')
-                    db_session.commit()
-                else:
-                    db_session.rollback()
-            db_session.close()
-            return redirect("/students/{}/".format(id), 303)
-        else:
-            db_session.close()
-            flash("Cannot edit the following fields for this students: {}".format(', ').join(denied_fields.intersection(requested_fields)), 'error')
-            return redirect("/employee/{}/".format(id), 303)
-    else:
-        db_session.close()
-        flash('Could locate corresponding student object in database', 'error')
-        return redirect('/', 303)
-
-def attempt_update(account, student, form):
-    success = True
-    updates = {}
-    for field, value in form.items():
-        validated = validate_field(field, value)
-        if validated is not None:
-            if field == 'email_address':
-                account.email_address = validated
-                updates['email_address'] = validated
-            elif field == 't_number':
-                if value[0] == 'T':
-                    value = value[1:]
-                student.t_number = validated
-                updates['t_number'] = validated
-            elif field == 'first_name':
-                student.first_name = validated
-                updates['first_name'] = validated
-            elif field == 'last_name':
-                student.last_name = validated
-                updates['last_name'] = validated
-            elif field == 'alternative_name':
-                student.alternative_name = validated
-                updates['alternative_name'] = validated
-            else:
-                flash("Cannot update {} field".format(field), 'error')
-                success = False
-        else:
-            success = False
-    if success and user_session['id'] == account.id:
-        user_session.update(updates)
-    return success
+    read, write = get_read_only(id), get_read_write(id)
+    return edit_user(id, 'student', read, write, request.form)
