@@ -11,51 +11,11 @@
 {% block scripts %}
     {{ super() }}
 	<script type="text/javascript" src="../static/js/jquery-1.11.3.min.js"></script>
-	<!--Script that eventually may allow search results on page-->
-	<!--	<script type="text/javascript">
-	$(function() {
-		$('submitbtn').click(function() {
-			var firstname = $('#firstname').val();
-			var lastname = $('#lastname').val();
-			var preferredname = $('#preferredname').val();
-			var ocmr = $('#ocmr').val();
-			var tnumber = $('#tnumber').val();
-			$.ajax({
-				url: '/search_results',
-				data: $('form').serialize(),
-				type: 'GET',
-				success: function(response) {
-					console.log(response);
-				},
-				error: function(error) {
-					console.log(error);
-				}
-				});
-			});
-		});
-	</script>
-<script type=text/javascript>
-	  $(function() {
-	    $('submitbtn').bind('click', function() {
-	      $.getJSON($SCRIPT_ROOT + '/_search_results', {
-	        firstname: $('input[name="firstname"]').val(),
-	        lastname: $('input[name="lastname"]').val(),
-	        preferredname: $('input[name="preferredname"]').val(),
-	        ocmr: $('input[name="ocmr"]').val(),
-	        tnumber: $('input[name="tnumber"]').val()
-	      }, function(data) {
-	        $("#test").text(data.lastname);
-	      });
-	      return false;
-	    });
-	  });
-	</script>-->
-
 {% endblock %}
 
 {% block content %}
     <div id="searchform">
-    	<form method="GET" class="inputform" id="studentsearchform" role="form">
+    	<form action="/results" method="GET" class="inputform" id="studentsearchform" role="form">
     		<h1>Student Search</h1>
     		Search for a student using one or more of the fields below.
     		<ul class="inputlist">

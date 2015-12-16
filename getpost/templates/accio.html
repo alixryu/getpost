@@ -3,7 +3,26 @@
 {% block title %}
     Search Results
 {% endblock %}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="/css/accio.css" />
+{% endblock %}
 
 {% block content %}
     <h1>Search Results</h1>
+    <div>
+    	<a href="/students">Click here to perform another search.</a>
+	</div>
+	<h2>Search parameters:</h2>
+    <div id='searchparams'>
+    	<span id='firstname_param'>First name: {{ firstname }}</span>
+    </br>
+    	<span id='lastname_param'>Last name: {{ lastname }}</span>
+    	</br>
+    	<span id='preferredname_param'>Preferred name: {{ preferredname }}</span>
+    	</br>
+    	<span id='ocmr_param'>OCMR: {{ ocmr }}</span>
+    	</br>
+    	<span id='tnumber_param'>T-Number: {{ tnumber }}</span>
+    </div>
 {% endblock %}

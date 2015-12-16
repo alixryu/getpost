@@ -16,8 +16,24 @@ accio_blueprint = Blueprint(
 
 
 @accio_blueprint.route('/')
+@login_required()
+@user_session_require({'role'})
 def accio_index():
 
-    return render_template(
-        'accio.html'
+	search_params = {}
+	search_params['firstname'] = request.args.get('firstname', '', type=str)
+	search_params['lastname'] = request.args.get('lastname', '', type=str)
+	search_params['preferredname'] = request.args.get('preferredname', '', type=str)
+	search_params['ocmr'] = request.args.get('ocmr', '', type=str)
+	search_params['tnumber'] = request.args.get('tnumber', '', type=str)
+
+	
+
+	return render_template(
+        'accio.html', 
+        firstname=search_params['firstname'], 
+        lastname=search_params['lastname'], 
+        preferredname=search_params['preferredname'], 
+        ocmr=search_params['ocmr'], 
+        tnumber=search_params['tnumber']
     )
