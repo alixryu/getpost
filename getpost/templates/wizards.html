@@ -8,12 +8,17 @@
     {{ super() }}
     <link rel="stylesheet" href="/css/forms.css" />
 {% endblock %}
+{% block scripts %}
+    {{ super() }}
+	<script type="text/javascript" src="../static/js/jquery-1.11.3.min.js"></script>
+
+{% endblock %}
 
 {% block content %}
-    <h1>Welcome to the Students page.</h1>
-    <div>
+    <div id="searchform">
     	<form method="GET" class="inputform" id="studentsearchform">
-    		Search for a student by one or more of the fields below.
+    		<h1>Student Search</h1>
+    		Search for a student using one or more of the fields below.
     		<ul class="inputlist">
                 <li id="firstname">
                     First Name
@@ -39,4 +44,5 @@
             <input type="submit" value="Search" />
     	</form>
     </div>
+
 {% endblock %}
