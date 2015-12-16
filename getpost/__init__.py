@@ -52,7 +52,7 @@ def install_error_handlers(app):
         desc = 'You do not have permission to access this page.'
         return render_template(
             'voldemort.html', status=403, description=desc
-        )
+        ), 403
 
 def install_static_routers(app):
     static_directory = join(abspath(dirname(__file__)), 'static/')
