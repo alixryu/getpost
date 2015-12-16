@@ -1,12 +1,12 @@
 from math import ceil
 from copy import deepcopy
 
-from flask import Blueprint, render_template, request, redirect, flash, abort, session as user_session
+from flask import Blueprint, render_template, request, redirect, session as user_session
 
 from . import ACCOUNT_PER_PAGE as page_size
 from ..models import Account, Student
 from ..orm import Session
-from .prefects import login_required, roles_required, roles_or_match_required
+from .prefects import login_required, roles_required, roles_or_match_required, user_session_require
 from .transfigure import view_user, edit_user
 
 wizards_blueprint = Blueprint(
@@ -79,6 +79,7 @@ def get_read_write(id):
 
 @wizards_blueprint.route('/')
 @login_required()
+@user_session_require({'role'})
 def wizards_index():
     if user_session['role'] == 'student':
         return redirect('/students/me/', 303)
