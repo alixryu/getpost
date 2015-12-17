@@ -37,10 +37,10 @@ def accio_index():
 
     base_query = db_session.query(Student)
 
-    for param, val in search_params.items():
+    #for param, val in search_params.items():
 
-        base_query.filter(Student.param == val)
-        
+        #base_query.filter(Student.param == val)
+
     page_count = int(ceil(base_query.count()/page_size))
 
     paginated_students = base_query.limit(
