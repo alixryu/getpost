@@ -10,30 +10,30 @@
 
 {% block content %}
     <h1>Search Results</h1>
-    <div>
+    <div class="outer-div">
+        <div>
     	<a href="/students">Click here to perform another search.</a>
 	</div>
-	<h2>Search parameters:</h2>
-    <div id='searchparams'>
-    	<span id='firstname_param'>First name: {{ search_params['firstname'] }}</span>
-    </br>
-    	<span id='lastname_param'>Last name: {{ search_params['lastname'] }}</span>
-    	</br>
-    	<span id='preferredname_param'>Preferred name: {{ search_params['preferredname'] }}</span>
-    	</br>
-    	<span id='ocmr_param'>OCMR: {{ search_params['ocmr'] }}</span>
-    	</br>
-    	<span id='tnumber_param'>T-Number: {{ search_params['tnumber'] }}</span>
+	<div id='searchparams' class='content'>
+    <h2>You searched for students with the following:</h2>
+    	<span id='firstname_param' class='param_label'>First name: <span class='param'>{{ search_params['firstname'] }}</span></span>
+
+    	<span id='lastname_param' class='param_label'>Last name: <span class='param'>{{ search_params['lastname'] }}</span></span>
+
+    	<span id='preferredname_param' class='param_label'>Preferred name: <span class='param'>{{ search_params['preferredname'] }}</span></span>
+    
+    	<span id='ocmr_param' class='param_label'>OCMR: <span class='param'>{{ search_params['ocmr'] }}</span></span>
+    
+    	<span id='tnumber_param' class='param_label'>T-Number: <span class='param'>{{ search_params['tnumber'] }}</span></span>
     </div>
-    <div id='results'>
-    <ul>
+    <div id='results' class='content'>
+        <h2>Your search found the following:</h2>
         {% if search_all == True %}
             <div>You must enter some search criteria!</div>
         {% elif search_none == True %}
             <div>No results found :(</div>
         {% else %}
             {% for student in students %}
-
                 <div>
                     <span>First Name: {{ student.first_name }}</span>
                     </br>
@@ -48,6 +48,6 @@
                 </br>
             {% endfor %}
         {% endif %}
-    </ul>
     </div>
+</div>
 {% endblock %}

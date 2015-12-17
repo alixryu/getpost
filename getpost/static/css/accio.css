@@ -8,7 +8,26 @@ h2 {
     font-family: Helvetica, sans-serif;
 }
 
-#searchparams {
+.outer-div {
+	margin: 0 auto;
+}
+
+.content {
+	margin: 0 auto;
 	font-family: Helvetica, sans-serif;
 	font-size: 12px;
+}
+
+.param_label {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.param{
+
+	color: black;
+}
+
+#results {
+	padding-left: 100px;
 }
