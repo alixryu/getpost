@@ -1,11 +1,11 @@
 from math import ceil
 from sqlalchemy.orm.exc import NoResultFound
-from flask import Blueprint, render_template, request, redirect, flash, abort, session as user_session
+from flask import Blueprint, render_template, request, redirect, flash, session as user_session
 
 from . import ACCOUNT_PER_PAGE as page_size
 from ..models import Account, Student
 from ..orm import Session
-from .prefects import login_required, user_session_require, roles_required, roles_or_match_required
+from .prefects import login_required, roles_required
 
 
 accio_blueprint = Blueprint(
@@ -17,7 +17,7 @@ accio_blueprint = Blueprint(
 
 @accio_blueprint.route('/')
 @login_required()
-@user_session_require({'role'})
+@roles_required({'employee', 'administrator'})
 def accio_index():
 
     if user_session['role'] == 'student':
@@ -54,7 +54,7 @@ def accio_index():
             base_query = base_query.filter(Student.t_number == search_params['tnumber'])
             search_all = False
 
-        page_count = int(ceil(base_query.count()/page_size))
+        page_count = int(ceil(base_query.count() / page_size))
 
         paginated_students = base_query.limit(
             page_size
