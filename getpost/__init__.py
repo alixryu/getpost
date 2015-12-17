@@ -13,6 +13,7 @@ from .desk.parcels import parcels_blueprint
 from .desk.wizards import wizards_blueprint
 from .desk.professors import professors_blueprint
 from .desk.headmaster import headmaster_blueprint
+from .desk.accio import accio_blueprint
 
 from .desk.prefects import is_logged_in
 
@@ -35,7 +36,7 @@ def register_blueprints(app):
     for blueprint in {
         hogwarts_blueprint, boats_blueprint, carriages_blueprint,
         owls_blueprint, parcels_blueprint, wizards_blueprint,
-        professors_blueprint, headmaster_blueprint
+        professors_blueprint, headmaster_blueprint, accio_blueprint
     }:
         app.register_blueprint(blueprint)
 
@@ -60,7 +61,7 @@ def install_error_handlers(app):
         desc = 'You do not have permission to access this page.'
         return render_template(
             'voldemort.html', status=403, description=desc
-        )
+        ), 403
 
 
 def install_static_routers(app):
@@ -70,7 +71,8 @@ def install_static_routers(app):
                      'error.css': 'voldemort.css',
                      'home.css': 'hogwarts.css',
                      'forms.css': 'scrolls.css',
-                     'edituser.css': 'transfigure.css'}
+                     'edituser.css': 'transfigure.css',
+                     'admin.css': 'headmaster.css'}
 
     @app.route('/css/<path:path>')
     def send_css(path):
@@ -78,7 +80,9 @@ def install_static_routers(app):
             path = css_codenames[path]
         return send_from_directory(join(static_directory, 'css/'), path)
 
-    js_codenames = {'signup.js': 'boats.js'}
+        js_codenames = {'signup.js': 'boats.js',
+                    'edit.js': 'transfigure.js',
+                    'addaccount.js': 'letter.js'}
 
     @app.route('/js/<path:path>')
     def send_js(path):

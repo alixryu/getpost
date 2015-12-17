@@ -12,6 +12,8 @@
 
 {% block scripts %}
     {{ super() }}
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="/js/edit.js"></script>
 {% endblock %}
 
 {% macro field(name='', type='', title='', checked=False, pattern=None, disabled=False, value=None, label=False) %}
@@ -30,7 +32,7 @@
 
 {% block content %}
     <h1>View/Edit Account</h1>
-    <form action="{{ action }}" method="{{ method }}" class="inputform" id="signupform">
+    <form action="{{ action }}" method="{{ method }}" class="inputform" id="editform">
         <ul class="inputlist">
             {% for attribute in read %}
                 {{ field(name=attribute, disabled=True, **fields[attribute]) }}

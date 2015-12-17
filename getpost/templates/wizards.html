@@ -8,12 +8,16 @@
     {{ super() }}
     <link rel="stylesheet" href="/css/forms.css" />
 {% endblock %}
+{% block scripts %}
+    {{ super() }}
+	<script type="text/javascript" src="../static/js/jquery-1.11.3.min.js"></script>
+{% endblock %}
 
 {% block content %}
-    <h1>Welcome to the Students page.</h1>
-    <div>
-    	<form method="GET" class="inputform" id="studentsearchform">
-    		Search for a student by one or more of the fields below.
+    <div id="searchform">
+    	<form action="/results" method="GET" class="inputform" id="studentsearchform" role="form">
+    		<h1>Student Search</h1>
+    		Search for a student using one or more of the fields below.
     		<ul class="inputlist">
                 <li id="firstname">
                     First Name
@@ -24,6 +28,11 @@
                     Last Name:
                     <br />
                     <input type="text" name="lastname"/>
+                </li>
+                <li id="preferredname">
+                    Preferred Name:
+                    <br />
+                    <input type="text" name="preferredname"/>
                 </li>
                 <li id="ocmr">
                     OCMR:
@@ -36,7 +45,16 @@
                     <input type="text" name="tnumber"/>
                 </li>
             </ul>
-            <input type="submit" value="Search" />
+            <input id="submitbtn" type="submit" value="Search" />
     	</form>
     </div>
+    <!--This may one day have search results - who knows?? 
+    <div id="searchresults">
+    	<p>{{ firstname }}</p>
+    	<p id="test">?<p>
+    	<p>{{ preferredname }}</p>
+    	<p>{{ ocmr }}</p>
+    	<p>{{ tnumber }}</p>
+    </div>-->
+
 {% endblock %}

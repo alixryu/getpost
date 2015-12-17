@@ -1,0 +1,53 @@
+{% extends "maraudersmap.html" %}
+
+{% block title %}
+    Search Results
+{% endblock %}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="/css/accio.css" />
+{% endblock %}
+
+{% block content %}
+    <h1>Search Results</h1>
+    <div>
+    	<a href="/students">Click here to perform another search.</a>
+	</div>
+	<h2>Search parameters:</h2>
+    <div id='searchparams'>
+    	<span id='firstname_param'>First name: {{ search_params['firstname'] }}</span>
+    </br>
+    	<span id='lastname_param'>Last name: {{ search_params['lastname'] }}</span>
+    	</br>
+    	<span id='preferredname_param'>Preferred name: {{ search_params['preferredname'] }}</span>
+    	</br>
+    	<span id='ocmr_param'>OCMR: {{ search_params['ocmr'] }}</span>
+    	</br>
+    	<span id='tnumber_param'>T-Number: {{ search_params['tnumber'] }}</span>
+    </div>
+    <div id='results'>
+    <ul>
+        {% if search_all == True %}
+            <div>You must enter some search criteria!</div>
+        {% elif search_none == True %}
+            <div>No results found :(</div>
+        {% else %}
+            {% for student in students %}
+
+                <div>
+                    <span>First Name: {{ student.first_name }}</span>
+                    </br>
+                    <span>Last Name: {{ student.last_name }}</span>
+                    </br>
+                    <span>Preferred Name: {{ student.alternative_name }}</span>
+                    </br>
+                    <span>OCMR: {{ student.ocmr }}</span>
+                    </br>
+                    <span>T-Number: {{ student.t_number }}</span>
+                </div>
+                </br>
+            {% endfor %}
+        {% endif %}
+    </ul>
+    </div>
+{% endblock %}
