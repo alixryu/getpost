@@ -20,20 +20,45 @@ accio_blueprint = Blueprint(
 @user_session_require({'role'})
 def accio_index():
 
-	search_params = {}
-	search_params['firstname'] = request.args.get('firstname', '', type=str)
-	search_params['lastname'] = request.args.get('lastname', '', type=str)
-	search_params['preferredname'] = request.args.get('preferredname', '', type=str)
-	search_params['ocmr'] = request.args.get('ocmr', '', type=str)
-	search_params['tnumber'] = request.args.get('tnumber', '', type=str)
+    if user_session['role'] == 'student':
+        return redirect('/students/me/', 303)
+    neg_check = lambda x: x if x >= 1 else 1
+    page = neg_check(request.args.get('page', 1, type=int))
 
-	
+    search_params = {}
+    search_params['firstname'] = request.args.get('firstname', '', type=str)
+    search_params['lastname'] = request.args.get('lastname', '', type=str)
+    search_params['preferredname'] = request.args.get('preferredname', '', type=str)
+    search_params['ocmr'] = request.args.get('ocmr', '', type=str)
+    search_params['tnumber'] = request.args.get('tnumber', '', type=str)
 
-	return render_template(
-        'accio.html', 
-        firstname=search_params['firstname'], 
-        lastname=search_params['lastname'], 
-        preferredname=search_params['preferredname'], 
-        ocmr=search_params['ocmr'], 
-        tnumber=search_params['tnumber']
-    )
+    search_params = {key: value for (key, value) in search_params.items() if value != ''}
+    db_session = Session()
+
+    base_query = db_session.query(Student)
+
+    for param, val in search_params.items():
+
+        base_query.filter(Student.param == val)
+        
+    page_count = int(ceil(base_query.count()/page_size))
+
+    paginated_students = base_query.limit(
+        page_size
+        ).offset(
+        (page-1)*page_size
+        ).from_self().join(Account).all()
+
+    students = []
+    for s_a in paginated_students:
+        student = {}
+        student.update(s_a.as_dict(
+            {'first_name', 'last_name', 'alternative_name', 'ocmr', 't_number'}
+        ))
+        student.update(s_a.account.as_dict(
+            {'email_address', 'role', 'verified'}
+        ))
+        students.append(student)
+    db_session.close()
+
+    return render_template('accio.html', search_params=search_params, students=students)
