@@ -80,9 +80,9 @@ def install_static_routers(app):
             path = css_codenames[path]
         return send_from_directory(join(static_directory, 'css/'), path)
 
-        js_codenames = {'signup.js': 'boats.js',
-                        'edit.js': 'transfigure.js',
-                        'addaccount.js': 'letter.js'}
+    js_codenames = {'signup.js': 'boats.js',
+                    'edit.js': 'transfigure.js',
+                    'addaccount.js': 'letter.js'}
 
     @app.route('/js/<path:path>')
     def send_js(path):
