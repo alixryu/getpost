@@ -17,13 +17,19 @@ class Package(Base):
     __tablename__ = 'package'
 
     id = Column(Integer, primary_key=True)
-    student_id = Column(String)
+    student_id = Column(Integer, ForeignKey('student.id'))
     arrival_date = Column(DateTime)
     pickup_date = Column(DateTime)
     received_by = Column(String)
     status = Column(
         Enum('picked_up', 'not_picked_up', name='package_status_type')
     )
+
+    student = relationship(
+        'Student',
+        lazy='joined'
+        )
+    notifications = relationship('Notification')
 
 
 class Notification(Base):
@@ -33,23 +39,25 @@ class Notification(Base):
     package_id = Column(Integer, ForeignKey('package.id'))
     email_address = Column(String)
     send_date = Column(DateTime)
-    send_count = Column(DateTime)
+    send_count = Column(Integer)
+
+    package = relationship('Package')
 
 
 class Account(Base):
     __tablename__ = 'account'
 
     id = Column(Integer, primary_key=True)
-    email_address = Column(String)
+    email_address = Column(String, unique=True)
     password = Column(Binary)
     verified = Column(Boolean)
     role = Column(
         Enum('student', 'employee', 'administrator', name='account_type')
     )
 
-    student = relationship('Student', uselist=False, back_populates='account')
-    employee = relationship('Employee', uselist=False, back_populates='account')
-    administrator = relationship('Administrator', uselist=False, back_populates='account')
+    student = relationship('Student', uselist=False)
+    employee = relationship('Employee', uselist=False)
+    administrator = relationship('Administrator', uselist=False)
 
     login_attributes = {'id', 'role', 'email_address'}
 
@@ -68,7 +76,6 @@ class Account(Base):
             return self.administrator
         else:
             return None
-
 
     def log_in(self):
         user_session.update(self.as_dict(Account.login_attributes))
@@ -91,7 +98,7 @@ class Administrator(Base):
     first_name = Column(String)
     last_name = Column(String)
 
-    account = relationship('Account', back_populates='administrator')
+    account = relationship('Account')
 
     login_attributes = {'first_name', 'last_name'}
 
@@ -110,7 +117,7 @@ class Employee(Base):
     first_name = Column(String)
     last_name = Column(String)
 
-    account = relationship('Account', back_populates='employee')
+    account = relationship('Account')
 
     login_attributes = {'first_name', 'last_name'}
 
@@ -130,9 +137,13 @@ class Student(Base):
     last_name = Column(String)
     alternative_name = Column(String)
     ocmr = Column(String)
-    t_number = Column(Integer)
+    t_number = Column(String)
 
-    account = relationship('Account', back_populates='student')
+    account = relationship('Account')
+    packages = relationship(
+        'Package',
+        lazy='joined'
+        )
 
     login_attributes = {
         'first_name', 'last_name', 'alternative_name', 'ocmr', 't_number'

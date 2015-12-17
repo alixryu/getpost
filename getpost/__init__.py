@@ -1,5 +1,9 @@
-from flask import Flask, render_template, send_from_directory
 from os.path import join, dirname, abspath
+
+from flask import Flask, render_template, send_from_directory
+from flask.ext.mail import Mail
+
+mail = Mail()
 
 from .desk.hogwarts import hogwarts_blueprint
 from .desk.boats import boats_blueprint
@@ -22,7 +26,10 @@ def create_app(config_obj):
     install_static_routers(app)
     install_jinja_globals(app)
 
+    mail.init_app(app)
+
     return app
+
 
 def register_blueprints(app):
     for blueprint in {
@@ -31,6 +38,7 @@ def register_blueprints(app):
         professors_blueprint, headmaster_blueprint
     }:
         app.register_blueprint(blueprint)
+
 
 def install_error_handlers(app):
     @app.errorhandler(500)
@@ -54,6 +62,7 @@ def install_error_handlers(app):
             'voldemort.html', status=403, description=desc
         )
 
+
 def install_static_routers(app):
     static_directory = join(abspath(dirname(__file__)), 'static/')
 
@@ -69,7 +78,6 @@ def install_static_routers(app):
             path = css_codenames[path]
         return send_from_directory(join(static_directory, 'css/'), path)
 
-
     js_codenames = {'signup.js': 'boats.js'}
 
     @app.route('/js/<path:path>')
@@ -77,6 +85,7 @@ def install_static_routers(app):
         if path in js_codenames:
             path = js_codenames[path]
         return send_from_directory(join(static_directory, 'js/'), path)
+
 
 def install_jinja_globals(app):
     app.jinja_env.globals.update(is_logged_in=is_logged_in)
