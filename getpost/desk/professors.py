@@ -17,7 +17,7 @@ professors_blueprint = Blueprint(
 )
 
 READ_ONLY = {
-    'match': ('verified',),
+    'match': (),
     'employee': ('verified', 'first_name', 'last_name', 'email_address'),
     'administrator': ()
 }
@@ -51,13 +51,13 @@ INPUT_FIELDS = {
 }
 
 def get_read_only(id):
-    if id == user_session['id']:
+    if id == user_session['id'] and 'match' in READ_ONLY:
         return READ_ONLY['match']
     else:
         return READ_ONLY.get(user_session['role'], [])
 
 def get_read_write(id):
-    if id == user_session['id']:
+    if id == user_session['id'] and 'match' in READ_WRITE:
         return READ_WRITE['match']
     else:
         return READ_WRITE.get(user_session['role'], [])
@@ -99,7 +99,7 @@ def professors_index():
 
 @professors_blueprint.route('/me/')
 @login_required('/auth/')
-@roles_required({'employee'}, '/')
+@roles_required({'employee'})
 def professors_self():
     return redirect("/employees/{}/".format(user_session['id']), 303)
 

@@ -1,0 +1,16 @@
+.adminlinks {
+    padding: 20px 0 0;
+    font-family: Helvetica, sans-serif;
+    font-size: 30px;
+    color: #91002E;
+    width: 400px;
+    margin: 0 auto;
+}
+
+.adminlinks li {
+    padding: 7px 0 0;
+}
+
+.adminlinks a:link {
+    color: inherit;
+}

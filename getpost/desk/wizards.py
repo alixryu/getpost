@@ -114,7 +114,7 @@ def wizards_index():
 
 @wizards_blueprint.route('/me/')
 @login_required('/auth/')
-@roles_required({'student'}, '/')
+@roles_required({'student'})
 def wizards_self():
     return redirect("/students/{}/".format(user_session['id']), 303)
 

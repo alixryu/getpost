@@ -12,7 +12,8 @@ validation_matches = {
     't_number': 'T?([0-9]{8})',
     'email_address': r'(.+@.+\..+)',
     'password': '(.{6,})',
-    'ocmr': '[0-9]{1,4}'
+    'ocmr': '[0-9]{1,4}',
+    'verified': '(on)?'
 }
 
 validation_messages = {
@@ -22,7 +23,8 @@ validation_messages = {
     't_number': 'T number must contain exactly eight letters, optionally preceded by a capital "T"',
     'email_address': 'Invalid email address',
     'password': 'Passwords must be at least six characters long',
-    'ocmr': 'OCMR numbers must be between one and four digits'
+    'ocmr': 'OCMR numbers must be between one and four digits',
+    'verified': 'Verified field should either be "on" or not present'
 }
 
 # Validate data when updating, and return a sanitized version.
@@ -35,7 +37,12 @@ def validate_field(field, value, notify=True, strict=True):
             if notify:
                 flash(validation_messages[field], 'error')
             return None
-    return None if strict else ''
+    else:
+        if strict:
+            flash("Unrecognized field: {}".format(field), 'error')
+            return None
+        else:
+            return ''
 
 def view_user(id, role, read, write, fields):
     db_session = Session()
@@ -112,8 +119,6 @@ def attempt_update(account, person, form):
                 account.email_address = validated
                 updates['email_address'] = validated
             elif field == 't_number':
-                if value[0] == 'T':
-                    value = value[1:]
                 person.t_number = validated
                 updates['t_number'] = validated
             elif field == 'first_name':
@@ -125,6 +130,13 @@ def attempt_update(account, person, form):
             elif field == 'alternative_name':
                 person.alternative_name = validated
                 updates['alternative_name'] = validated
+            elif field == 'verified':
+                validated = bool(validated)
+                if not validated and account.id == user_session['id']:
+                    flash('You cannot set your own account to unverified', 'error')
+                    success = False
+                else:
+                    account.verified = bool(validated)
             else:
                 flash("Cannot update {} field".format(field), 'error')
                 success = False

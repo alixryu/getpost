@@ -61,7 +61,8 @@ def install_static_routers(app):
                      'error.css': 'voldemort.css',
                      'home.css': 'hogwarts.css',
                      'forms.css': 'scrolls.css',
-                     'edituser.css': 'transfigure.css'}
+                     'edituser.css': 'transfigure.css',
+                     'admin.css': 'headmaster.css'}
 
     @app.route('/css/<path:path>')
     def send_css(path):
@@ -71,7 +72,8 @@ def install_static_routers(app):
 
 
     js_codenames = {'signup.js': 'boats.js',
-                    'edit.js': 'transfigure.js'}
+                    'edit.js': 'transfigure.js',
+                    'addaccount.js': 'letter.js'}
 
     @app.route('/js/<path:path>')
     def send_js(path):

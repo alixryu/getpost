@@ -1,0 +1,55 @@
+{% extends "maraudersmap.html" %}
+
+{% block title %}
+    Add account
+{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="/css/forms.css" />
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="/js/addaccount.js"></script>
+{% endblock %}
+
+{% block content %}
+    <h1>Add account</h1>
+    <form action="/admin/addaccount/" method="POST" class="inputform" id="signupform">
+        Account type:
+        <select id="role" name="role">
+            <option value="student">Student</option>
+            <option value="employee">Employee</option>
+            <option value="admin">Administrator</option>
+        </select>
+        <ul class="inputlist">
+            <li id="fname">
+                <div>First Name:</div>
+                <input type="text" name="fname" pattern="^[a-zA-Z' -]+$" required />
+            </li>
+            <li id="aname">
+                <div>Preferred Name:</div>
+                <input type="text" name="aname" pattern="^[a-zA-Z' -]*$" />
+            </li>
+            <li id="lname">
+                <div>Last Name:</div>
+                <input type="text" name="lname" pattern="^[a-zA-Z' -]+$" required />
+            </li>
+            <li id="email">
+                <div>Email Address (must be an oberlin.edu address):</div>
+                <input type="email" name="email" pattern="^[a-zA-Z0-9]+@oberlin.edu$" required />
+            </li>
+            <li id="tnum">
+                <div>T number (does not need to begin with 'T'):</div>
+                <input type="text" name="tnum" pattern="^T?[0-9]{8}$" required />
+            </li>
+            <li id="ocmr">
+                <div>OCMR number:</div>
+                <input type="text" name="ocmr" pattern="^[0-9]{1,4}$" required />
+            </li>
+        </ul>
+        <input type="submit" value="Create Account" />
+    </form>
+{% endblock %}

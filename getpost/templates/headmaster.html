@@ -4,6 +4,17 @@
     Administrator
 {% endblock %}
 
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="/css/admin.css" />
+{% endblock %}
+
 {% block content %}
     <h1>Welcome to the Administrator page.</h1>
+    <ul class="adminlinks">
+        <li><a href="/admin/addaccount/">Add an account</a></li>
+        <li><a href="/admin/viewall/">View administrative accounts</a></li>
+        <li><a href="/students/">Search for students</a></li>
+        <li><a href="/employees/">Search for employees</a></li>
+    </ul>
 {% endblock %}
