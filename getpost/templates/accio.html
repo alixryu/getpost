@@ -27,20 +27,27 @@
     </div>
     <div id='results'>
     <ul>
-        {% for student in students %}
-            <div>
-                <span>First Name: {{ student.first_name }}</span>
+        {% if search_all == True %}
+            <div>You must enter some search criteria!</div>
+        {% elif search_none == True %}
+            <div>No results found :(</div>
+        {% else %}
+            {% for student in students %}
+
+                <div>
+                    <span>First Name: {{ student.first_name }}</span>
+                    </br>
+                    <span>Last Name: {{ student.last_name }}</span>
+                    </br>
+                    <span>Preferred Name: {{ student.alternative_name }}</span>
+                    </br>
+                    <span>OCMR: {{ student.ocmr }}</span>
+                    </br>
+                    <span>T-Number: {{ student.t_number }}</span>
+                </div>
                 </br>
-                <span>Last Name: {{ student.last_name }}</span>
-                </br>
-                <span>Preferred Name: {{ student.alternative_name }}</span>
-                </br>
-                <span>OCMR: {{ student.ocmr }}</span>
-                </br>
-                <span>T-Number: {{ student.t_number }}</span>
-            </div>
-            </br>
-        {% endfor %}
+            {% endfor %}
+        {% endif %}
     </ul>
     </div>
 {% endblock %}
