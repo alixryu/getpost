@@ -12,8 +12,8 @@ validation_matches = {
     't_number': 'T?([0-9]{8})',
     'email_address': r'(.+@.+\..+)',
     'password': '(.{6,})',
-    'ocmr': '[0-9]{1,4}',
-    'verified': '(on)?'
+    'ocmr': '([0-9]{1,4})',
+    'verified': '(on|off)'
 }
 
 validation_messages = {
@@ -24,7 +24,7 @@ validation_messages = {
     'email_address': 'Invalid email address',
     'password': 'Passwords must be at least six characters long',
     'ocmr': 'OCMR numbers must be between one and four digits',
-    'verified': 'Verified field should either be "on" or not present'
+    'verified': 'Account verification editing failed'
 }
 
 # Validate data when updating, and return a sanitized version.
@@ -63,8 +63,7 @@ def view_user(id, role, read, write, fields):
                     fields[name]['value'] = value
                 elif type(value) == bool:
                     if name == 'verified':
-                        fields[name]['checked'] = value
-                        fields[name]['label'] = True
+                        fields[name]['checked'] = bool(value)
         db_session.close()
         return render_template(
             'transfigure.html', action='edit/', method='POST', read=read,
@@ -90,6 +89,17 @@ def edit_user(id, role, read, write, form, url=None):
         requested_fields = set(request.form)
         if not denied_fields.intersection(requested_fields):
             edit_fields = {field: form[field] for field in form if field in allowed_fields}
+            if 'verified' in allowed_fields:
+                if 'verified' in requested_fields:
+                    if not account.verified:
+                        edit_fields['verified'] = 'on'
+                    else:
+                        edit_fields.pop('verified', None)
+                else:
+                    if account.verified:
+                        edit_fields['verified'] = 'off'
+                    else:
+                        edit_fields.pop('verified', None)
             if not edit_fields:
                 flash('No update parameters given', 'error')
             else:
@@ -131,12 +141,11 @@ def attempt_update(account, person, form):
                 person.alternative_name = validated
                 updates['alternative_name'] = validated
             elif field == 'verified':
-                validated = bool(validated)
-                if not validated and account.id == user_session['id']:
-                    flash('You cannot set your own account to unverified', 'error')
-                    success = False
+                if user_session['id'] != account.id:
+                    account.verified = validated == 'on'
                 else:
-                    account.verified = bool(validated)
+                    flash('You cannot change the verified status of your own account', 'error')
+                    success = False
             else:
                 flash("Cannot update {} field".format(field), 'error')
                 success = False

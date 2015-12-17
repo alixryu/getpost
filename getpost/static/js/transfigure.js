@@ -12,7 +12,7 @@ function extractValue(input) {
 
 function checkForChanges() {
   result = false;
-  $('#editform :input').not('[type="submit"], [type="checkbox"]').each(
+  $('#editform :input').not('[type="submit"]').each(
     function(_, e) {
       element = $(e);
       if (extractValue(element) != DEFAULTS[element.attr('name')]) {
