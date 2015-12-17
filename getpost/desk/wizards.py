@@ -108,9 +108,26 @@ def wizards_index():
         ))
         students.append(student)
     db_session.close()
+
     return render_template(
         'wizards.html', students=students, count=page_count
     )
+
+# Beginning of method to display search results on page
+# @wizards_blueprint.route('/search_results')
+# def search_results():
+#     firstname = request.form['firstname']
+#     lastname = request.form['lastname']
+#     return json.dumps({'status':'OK','firstname':firstname,'lastname':lastname});
+#     firstname = request.args.get('firstname', '', type=str)
+#     lastname = request.args.get('lastname', 'fart', type=str)
+#     preferredname = request.args.get('preferredname', '', type=str)
+#     ocmr = request.args.get('ocmr', '', type=str)
+#     tnumber = request.args.get('tnumber', '', type=str)
+#     return render_template(
+#         'wizards.html', firstname=firstname, lastname=lastname, preferredname=preferredname,
+#         ocmr=ocmr, tnumber=tnumber
+#     )
 
 @wizards_blueprint.route('/me/')
 @login_required('/auth/')

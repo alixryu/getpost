@@ -9,6 +9,7 @@ from .desk.parcels import parcels_blueprint
 from .desk.wizards import wizards_blueprint
 from .desk.professors import professors_blueprint
 from .desk.headmaster import headmaster_blueprint
+from .desk.accio import accio_blueprint
 
 from .desk.prefects import is_logged_in
 
@@ -28,7 +29,7 @@ def register_blueprints(app):
     for blueprint in {
         hogwarts_blueprint, boats_blueprint, carriages_blueprint,
         owls_blueprint, parcels_blueprint, wizards_blueprint,
-        professors_blueprint, headmaster_blueprint
+        professors_blueprint, headmaster_blueprint, accio_blueprint
     }:
         app.register_blueprint(blueprint)
 
