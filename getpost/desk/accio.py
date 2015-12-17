@@ -19,9 +19,6 @@ accio_blueprint = Blueprint(
 @login_required()
 @roles_required({'employee', 'administrator'})
 def accio_index():
-
-    if user_session['role'] == 'student':
-        return redirect('/students/me/', 303)
     neg_check = lambda x: x if x >= 1 else 1
     page = neg_check(request.args.get('page', 1, type=int))
 
