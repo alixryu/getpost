@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, redirect, request, flash, session 
 
 from .prefects import login_required, roles_required, roles_or_match_required, form_require
 from .transfigure import view_user, edit_user
-from getpost.orm import Session
+from getpost.orm import Session, ManagedSession
 from getpost.models import Account, Student, Employee, Administrator
 
 from re import fullmatch
@@ -122,37 +122,82 @@ def add_student(form):
         first_name, alternative_name is not None, last_name,
         email_address, ocmr, t_number
     )):
-        db_session = Session()
-        account = Account(
-            email_address=email_address,
-            password=None,
-            role='student',
-            verified=False
-        )
-        db_session.add(account)
-        db_session.commit()
-        id = account.id
-        student = Student(
-            id=id,
-            first_name=first_name,
-            alternative_name=alternative_name,
-            last_name=last_name,
-            ocmr=ocmr,
-            t_number=t_number
-        )
-        db_session.add(student)
-        db_session.commit()
-        db_session.close()
-        flash('Account created successfully!', 'success')
-        return redirect("/students/{}/".format(id), 303)
+        with ManagedSession(Session, True) as db_session:
+            account = Account(
+                email_address=email_address,
+                password=None,
+                role='student',
+                verified=False
+            )
+            db_session.add(account)
+            db_session.flush()
+            id = account.id
+            student = Student(
+                id=id,
+                first_name=first_name,
+                alternative_name=alternative_name,
+                last_name=last_name,
+                ocmr=ocmr,
+                t_number=t_number
+            )
+            db_session.add(student)
+            flash('Account created successfully!', 'success')
+            return redirect("/students/{}/".format(id), 303)
     else:
         flash('Unable to create new account', 'error')
 
 def add_employee(form):
-    pass
+    first_name = validate_input('first_name', form['fname'])
+    last_name = validate_input('last_name', form['lname'])
+    email_address = validate_input('email_address', form['email'])
+    if all((first_name, last_name, email_address)):
+        with ManagedSession(Session, True) as db_session:
+            account = Account(
+                email_address=email_address,
+                password=None,
+                role='employee',
+                verified=False
+            )
+            db_session.add(account)
+            db_session.flush()
+            id = account.id
+            employee = Employee(
+                id=id,
+                first_name=first_name,
+                last_name=last_name,
+            )
+            db_session.add(employee)
+            flash('Account created successfully!', 'success')
+            return redirect("/employees/{}/".format(id), 303)
+    else:
+        flash('Unable to create new account', 'error')
+
 
 def add_admin(form):
-    pass
+    first_name = validate_input('first_name', form['fname'])
+    last_name = validate_input('last_name', form['lname'])
+    email_address = validate_input('email_address', form['email'])
+    if all((first_name, last_name, email_address)):
+        with ManagedSession(Session, True) as db_session:
+            account = Account(
+                email_address=email_address,
+                password=None,
+                role='employee',
+                verified=False
+            )
+            db_session.add(account)
+            db_session.flush()
+            id = account.id
+            admin = Administrator(
+                id=id,
+                first_name=first_name,
+                last_name=last_name,
+            )
+            db_session.add(admin)
+            flash('Account created successfully!', 'success')
+            return redirect("/admin/{}/".format(id), 303)
+    else:
+        flash('Unable to create new account', 'error')
 
 
 @headmaster_blueprint.route('/me/')
