@@ -42,12 +42,11 @@ def carriages_in():
 @carriages_blueprint.route('/out/')
 @login_required('/auth/')
 def carriages_out():
-    db_session = Session()
-    account = db_session.query(Account).get(user_session['id'])
-    if account:
-        account.log_out()
-        flash('Logout successful!', 'success')
-    else:
-        user_session.clear()
-    db_session.close()
-    return redirect('/', 303)
+    with ManagedSession(Session, False) as db_session:
+        account = db_session.query(Account).get(user_session['id'])
+        if account:
+            account.log_out()
+            flash('Logout successful!', 'success')
+        else:
+            user_session.clear()
+        return redirect('/', 303)
