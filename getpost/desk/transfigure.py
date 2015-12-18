@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, flash, abort, session as user_session
 
 from ..models import Account
-from ..orm import Session
+from ..orm import Session, ManagedSession
 
 from re import fullmatch
 
@@ -45,79 +45,71 @@ def validate_field(field, value, notify=True, strict=True):
             return ''
 
 def view_user(id, role, read, write, fields):
-    db_session = Session()
-    account = db_session.query(Account).get(id)
-    if not (account and account.role == role):
-        db_session.close()
-        abort(404)
-    person = account.get_person()
-    if person:
-        values = {}
-        values.update(account.as_dict(read + write))
-        values.update(person.as_dict(read + write))
-        for name, value in values.items():
-            if name in fields:
-                if name in read and (value is None or value == ''):
-                    fields[name]['value'] = 'None listed'
-                elif type(value) in {str, int}:
-                    fields[name]['value'] = value
-                elif type(value) == bool:
-                    if name == 'verified':
-                        fields[name]['checked'] = bool(value)
-        db_session.close()
-        return render_template(
-            'transfigure.html', action='edit/', method='POST', read=read,
-            write=write, fields=fields, role=role.capitalize()
-        )
-    else:
-        db_session.close()
-        flash('Could locate corresponding ' + role + ' object in database', 'error')
-        return redirect('/', 303)
+    with ManagedSession(Session, False) as db_session:
+        account = db_session.query(Account).get(id)
+        if not (account and account.role == role):
+            abort(404)
+        person = account.get_person()
+        if person:
+            values = {}
+            values.update(account.as_dict(read + write))
+            values.update(person.as_dict(read + write))
+            for name, value in values.items():
+                if name in fields:
+                    if name in read and (value is None or value == ''):
+                        fields[name]['value'] = 'None listed'
+                    elif type(value) in {str, int}:
+                        fields[name]['value'] = value
+                    elif type(value) == bool:
+                        if name == 'verified':
+                            fields[name]['checked'] = bool(value)
+            return render_template(
+                'transfigure.html', action='edit/', method='POST', read=read,
+                write=write, fields=fields, role=role.capitalize()
+            )
+        else:
+            flash('Could locate corresponding ' + role + ' object in database', 'error')
+            return redirect('/', 303)
 
 def edit_user(id, role, read, write, form, url=None):
     if url is None:
         url = role + 's'
-    db_session = Session()
-    account = db_session.query(Account).get(id)
-    if account.role != role:
-        db_session.close()
-        abort(404)
-    person = account.get_person()
-    if person:
-        denied_fields = set(read)
-        allowed_fields = set(write)
-        requested_fields = set(request.form)
-        if not denied_fields.intersection(requested_fields):
-            edit_fields = {field: form[field] for field in form if field in allowed_fields}
-            if 'verified' in allowed_fields:
-                if 'verified' in requested_fields:
-                    if not account.verified:
-                        edit_fields['verified'] = 'on'
+    with ManagedSession(Session, True) as db_session:
+        account = db_session.query(Account).get(id)
+        if account.role != role:
+            abort(404)
+        person = account.get_person()
+        if person:
+            denied_fields = set(read)
+            allowed_fields = set(write)
+            requested_fields = set(request.form)
+            if not denied_fields.intersection(requested_fields):
+                edit_fields = {field: form[field] for field in form if field in allowed_fields}
+                if 'verified' in allowed_fields:
+                    if 'verified' in requested_fields:
+                        if not account.verified:
+                            edit_fields['verified'] = 'on'
+                        else:
+                            edit_fields.pop('verified', None)
                     else:
-                        edit_fields.pop('verified', None)
+                        if account.verified:
+                            edit_fields['verified'] = 'off'
+                        else:
+                            edit_fields.pop('verified', None)
+                if not edit_fields:
+                    flash('No update parameters given', 'error')
                 else:
-                    if account.verified:
-                        edit_fields['verified'] = 'off'
+                    if attempt_update(account, person, edit_fields):
+                        flash('Account updated successfully!', 'success')
                     else:
-                        edit_fields.pop('verified', None)
-            if not edit_fields:
-                flash('No update parameters given', 'error')
+                        db_session.rollback()
+                return redirect("/{}/{}/".format(url, id), 303)
             else:
-                if attempt_update(account, person, edit_fields):
-                    flash('Account updated successfully!', 'success')
-                    db_session.commit()
-                else:
-                    db_session.rollback()
-            db_session.close()
-            return redirect("/{}/{}/".format(url, id), 303)
+                flash("Cannot edit the following fields for this ' + role + ': {}".format(', ').join(denied_fields.intersection(requested_fields)), 'error')
+                return redirect("/{}/{}/".format(url, id), 303)
         else:
-            db_session.close()
-            flash("Cannot edit the following fields for this ' + role + ': {}".format(', ').join(denied_fields.intersection(requested_fields)), 'error')
-            return redirect("/{}/{}/".format(url, id), 303)
-    else:
-        db_session.close()
-        flash('Could locate corresponding ' + role + ' object in database', 'error')
-        return redirect('/', 303)
+            flash('Could locate corresponding ' + role + ' object in database', 'error')
+            return redirect('/', 303)
 
 def attempt_update(account, person, form):
     success = True
