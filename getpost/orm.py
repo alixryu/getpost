@@ -37,7 +37,7 @@ class ManagedSession:
         return self.session
 
     def __exit__(self, etype, evalue, etrace):
-        success = all(etype is None, evalue is None, etrace is None)
+        success = all(arg is None for arg in (etype, evalue, etrace))
         if success:
             self.session.commit()
         else:
