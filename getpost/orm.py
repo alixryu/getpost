@@ -29,6 +29,20 @@ class DictBase(ReprBase):
         return result
         # return {column: getattr(self, column) for column in columns}
 
+class ManagedSession:
+    def __init__(self, session_maker):
+        self.session = session_maker()
+
+    def __enter__(self):
+        return self.session
+
+    def __exit__(self, etype, evalue, etrace):
+        success = all(etype is None, evalue is None, etrace is None)
+        if success:
+            self.session.commit()
+        else:
+            self.session.rollback()
+        return success
 
 Base = declarative_base(cls=DictBase)
 
