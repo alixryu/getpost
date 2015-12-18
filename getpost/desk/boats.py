@@ -25,7 +25,7 @@ def boats_new():
     if tnum[0] == 'T':
         tnum = tnum[1:]
     try:
-        with ManagedSession(Session) as db_session:
+        with ManagedSession(Session, True) as db_session:
             account = db_session.query(Account).filter(Account.email_address == email).one()
             if account.verified:
                 flash('An account for {} has already been created'.format(email), 'error')
