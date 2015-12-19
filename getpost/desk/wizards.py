@@ -1,13 +1,14 @@
 from math import ceil
 from copy import deepcopy
 
-from flask import Blueprint, render_template, request, redirect, session as user_session
+from flask import Blueprint, render_template, request, redirect, flash, session as user_session
 
 from . import ACCOUNT_PER_PAGE as page_size
-from ..models import Account, Student
-from ..orm import Session
-from .prefects import login_required, roles_required, roles_or_match_required, user_session_require
+from ..models import Account, Student, Employee
+from ..orm import ManagedSession
+from .prefects import login_required, roles_required, roles_or_match_required, user_session_require, form_require
 from .transfigure import view_user, edit_user
+from .accio import search_user
 
 wizards_blueprint = Blueprint(
     'wizards',
@@ -83,51 +84,7 @@ def get_read_write(id):
 def wizards_index():
     if user_session['role'] == 'student':
         return redirect('/students/me/', 303)
-    neg_check = lambda x: x if x >= 1 else 1
-    page = neg_check(request.args.get('page', 1, type=int))
-
-    db_session = Session()
-
-    base_query = db_session.query(Student)
-    page_count = int(ceil(base_query.count()/page_size))
-
-    paginated_students = base_query.limit(
-        page_size
-    ).offset(
-        (page-1)*page_size
-    ).from_self().join(Account).all()
-
-    students = []
-    for s_a in paginated_students:
-        student = {}
-        student.update(s_a.as_dict(
-            {'first_name', 'last_name', 'alternative_name', 'ocmr', 't_number'}
-        ))
-        student.update(s_a.account.as_dict(
-            {'email_address', 'role', 'verified'}
-        ))
-        students.append(student)
-    db_session.close()
-
-    return render_template(
-        'wizards.html', students=students, count=page_count
-    )
-
-# Beginning of method to display search results on page
-# @wizards_blueprint.route('/search_results')
-# def search_results():
-#     firstname = request.form['firstname']
-#     lastname = request.form['lastname']
-#     return json.dumps({'status':'OK','firstname':firstname,'lastname':lastname});
-#     firstname = request.args.get('firstname', '', type=str)
-#     lastname = request.args.get('lastname', 'fart', type=str)
-#     preferredname = request.args.get('preferredname', '', type=str)
-#     ocmr = request.args.get('ocmr', '', type=str)
-#     tnumber = request.args.get('tnumber', '', type=str)
-#     return render_template(
-#         'wizards.html', firstname=firstname, lastname=lastname, preferredname=preferredname,
-#         ocmr=ocmr, tnumber=tnumber
-#     )
+    return render_template('wizards.html')
 
 @wizards_blueprint.route('/me/')
 @login_required('/auth/')
@@ -149,3 +106,9 @@ def wizards_view(id):
 def wizards_edit(id):
     read, write = get_read_only(id), get_read_write(id)
     return edit_user(id, 'student', read, write, request.form)
+
+@wizards_blueprint.route('/results/')
+@login_required()
+@roles_required({'employee', 'administrator'})
+def wizards_search():
+    return search_user('student', request.args)

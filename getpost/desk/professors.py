@@ -9,6 +9,8 @@ from ..orm import Session
 from .prefects import login_required, roles_required, roles_or_match_required
 from .transfigure import view_user, edit_user
 
+from .accio import search_user
+
 
 professors_blueprint = Blueprint(
     'professors',
@@ -69,33 +71,7 @@ def get_read_write(id):
 def professors_index():
     if user_session['role'] == 'employee':
         return redirect('/employee/me/', 303)
-    neg_check = lambda x: x if x >= 1 else 1
-    page = neg_check(request.args.get('page', 1, type=int))
-
-    session = Session()
-
-    base_query = session.query(Employee)
-    page_count = int(ceil(base_query.count()/page_size))
-
-    paginated_employees = base_query.limit(
-        page_size
-    ).offset(
-        (page-1)*page_size
-    ).from_self().join(Account).all()
-
-    employees = []
-    for e_a in paginated_employees:
-        employee = {}
-        employee['email_address'] = e_a.account.email_address
-        employee['role'] = e_a.account.role
-        employee['verified'] = e_a.account.verified
-        employee['first_name'] = e_a.first_name
-        employee['last_name'] = e_a.last_name
-        employees.append(employee)
-    session.close()
-    return render_template(
-        'professors.html', employees=employees, count=page_count
-    )
+    return render_template('professors.html')
 
 @professors_blueprint.route('/me/')
 @login_required('/auth/')
@@ -117,3 +93,9 @@ def professors_view(id):
 def professors_edit(id):
     read, write = get_read_only(id), get_read_write(id)
     return edit_user(id, 'employee', read, write, request.form)
+
+@professors_blueprint.route('/results/')
+@login_required()
+@roles_required({'administrator'})
+def wizards_search():
+    return search_user('employee', request.args)

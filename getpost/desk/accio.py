@@ -3,8 +3,8 @@ from sqlalchemy.orm.exc import NoResultFound
 from flask import Blueprint, render_template, request, redirect, flash, session as user_session
 
 from . import ACCOUNT_PER_PAGE as page_size
-from ..models import Account, Student
-from ..orm import Session
+from ..models import Account, Student, Employee
+from ..orm import ManagedSession
 from .prefects import login_required, roles_required
 
 
@@ -15,66 +15,61 @@ accio_blueprint = Blueprint(
 )
 
 
-@accio_blueprint.route('/')
-@login_required()
-@roles_required({'employee', 'administrator'})
-def accio_index():
+def search_user(role, form):
+    print("Role: {}\nForm: {}".format(role, form))
     neg_check = lambda x: x if x >= 1 else 1
     page = neg_check(request.args.get('page', 1, type=int))
 
-    search_params = {}
-    search_params['firstname'] = request.args.get('firstname', '', type=str)
-    search_params['lastname'] = request.args.get('lastname', '', type=str)
-    search_params['preferredname'] = request.args.get('preferredname', '', type=str)
-    search_params['ocmr'] = request.args.get('ocmr', '', type=str)
-    search_params['tnumber'] = request.args.get('tnumber', '', type=str)
+    with ManagedSession(False) as db_session:
+        if role == 'student':
+            searchpage = '/students/'
+            query_class = Student
+            valid_params = {'firstname': 'First Name', 'lastname': 'Last Name', 'preferredname': 'Preferred Name', 'ocmr': 'OCMR number', 'tnumber': 'T number'}
+            object_translations = {'first_name': 'First Name', 'last_name': 'Last Name', 'alternative_name': 'Preferred Name', 'ocmr': 'OCMR number', 't_number': 'T number'}
+        elif role == 'employee':
+            searchpage = '/employees/'
+            query_class = Employee
+            valid_params = {'firstname': 'First Name', 'lastname': 'Last Name'}
+            object_translations = {'first_name': 'First Name', 'last_name': 'Last Name'}
+        else:
+            flash("Unrecognized search role: {}".format(role), 'error')
+            return redirect('')
+        parameters = {valid_params[param]: form[param] for param in form if param in valid_params}
+        base_query = db_session.query(query_class)
+        noparams = True
 
-    db_session = Session()
-    search_all = True
-    search_none = False
-
-    try:
-        base_query = db_session.query(Student)
-        if (search_params['firstname'] != ''):
-            base_query = base_query.filter(Student.first_name == search_params['firstname'])
-            search_all = False
-        if (search_params['lastname'] != ''):
-            base_query = base_query.filter(Student.last_name == search_params['lastname'])
-            search_all = False
-        if (search_params['preferredname'] != ''):
-            base_query = base_query.filter(Student.alternative_name == search_params['preferredname'])
-            search_all = False
-        if (search_params['ocmr'] != ''):
-            base_query = base_query.filter(Student.ocmr == search_params['ocmr'])
-            search_all = False
-        if (search_params['tnumber'] != ''):
-            base_query = base_query.filter(Student.t_number == search_params['tnumber'])
-            search_all = False
+        for param, value in parameters.items():
+            if value:
+                if param == 'First Name':
+                    base_query = base_query.filter(query_class.first_name == value)
+                elif param == 'Last Name':
+                    base_query = base_query.filter(query_class.last_name == value)
+                elif param == 'Preferred Name':
+                    base_query = base_query.filter(query_class.alternative_name == value)
+                elif param == 'OCMR number':
+                    base_query = base_query.filter(query_class.ocmr == value)
+                elif param == 'T number':
+                    base_query = base_query.filter(query_class.t_number == value)
+                noparams = False
 
         page_count = int(ceil(base_query.count() / page_size))
-
         paginated_students = base_query.limit(
             page_size
             ).offset(
             (page-1)*page_size
             ).from_self().join(Account).all()
 
-        students = []
+        results = []
         for s_a in paginated_students:
-            student = {}
-            student.update(s_a.as_dict(
+            result = {}
+            result.update({object_translations[key]: value for key, value in s_a.as_dict(
                 {'first_name', 'last_name', 'alternative_name', 'ocmr', 't_number'}
-            ))
-            student.update(s_a.account.as_dict(
-                {'email_address', 'role', 'verified'}
-            ))
-            students.append(student)
-        if len(students) == 0:
-            search_none = True
+            ).items()})
+            if 'OCMR number' in result and result['OCMR number'] == '-1':
+                result['OCMR number'] = None
+            results.append(result)
 
-    except NoResultFound:
-        flash('An error occurred', 'error')
-    finally:
-        db_session.close()
+        print("Results: {}".format(results))
+        print("Parameters: {}".format(parameters))
 
-    return render_template('accio.html', search_params=search_params, students=students, search_none=search_none, search_all=search_all)
+        return render_template('accio.html', parameters=parameters, role=role, results=results, noparams=noparams, searchpage=searchpage)

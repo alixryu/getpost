@@ -1,15 +1,37 @@
 {% extends "maraudersmap.html" %}
 
 {% block title %}
-    Employees
+    Students
+{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="/css/forms.css" />
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+	<script type="text/javascript" src="../static/js/jquery-1.11.3.min.js"></script>
 {% endblock %}
 
 {% block content %}
-    <h1>Welcome to the Employees page.</h1>
-    <ul>
-        {% for employee in employees %}
-            <p>{{ employee }}</p>
-        {% endfor %}
-    </ul>
-    <p>{{ count }}</p>
+    <div id="searchform">
+    	<form action="/employees/results" method="GET" class="inputform" id="studentsearchform" role="form">
+    		<h1>Employee Search</h1>
+    		Search for an employee using one or more of the fields below.
+    		<ul class="inputlist">
+                <li id="firstname">
+                    First Name
+                    <br />
+                    <input type="text" name="firstname"/>
+                </li>
+                <li id="lastname">
+                    Last Name:
+                    <br />
+                    <input type="text" name="lastname"/>
+                </li>
+            </ul>
+            <input id="submitbtn" type="submit" value="Search" />
+    	</form>
+    </div
+
 {% endblock %}

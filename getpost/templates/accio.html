@@ -8,45 +8,35 @@
     <link rel="stylesheet" href="/css/accio.css" />
 {% endblock %}
 
+{% macro searchparam(param, value) %}
+    <div class="param_label">{{ param }}: <span class="param">{{ value or '(None)' }}</span></div>
+{% endmacro %}
+
 {% block content %}
-    <h1>Search Results</h1>
+    <h1>{{ role.capitalize() }} Search Results</h1>
     <div class="outer-div">
         <div>
-    	<a href="/students">Click here to perform another search.</a>
+    	<a href="{{ searchpage }}">Click here to perform another search.</a>
 	</div>
 	<div id='searchparams' class='content'>
-    <h2>You searched for students with the following:</h2>
-    	<span id='firstname_param' class='param_label'>First name: <span class='param'>{{ search_params['firstname'] }}</span></span>
+    <h2>You searched for {{ role }}s with the following:</h2>
+    {% for param, value in parameters.items() %}
+        {{ searchparam(param, value) }}
+    {% endfor %}
 
-    	<span id='lastname_param' class='param_label'>Last name: <span class='param'>{{ search_params['lastname'] }}</span></span>
-
-    	<span id='preferredname_param' class='param_label'>Preferred name: <span class='param'>{{ search_params['preferredname'] }}</span></span>
-    
-    	<span id='ocmr_param' class='param_label'>OCMR: <span class='param'>{{ search_params['ocmr'] }}</span></span>
-    
-    	<span id='tnumber_param' class='param_label'>T-Number: <span class='param'>{{ search_params['tnumber'] }}</span></span>
-        
     </div>
     <div id='results' class='content'>
         <h2>Your search found the following:</h2>
-        {% if search_all == True %}
+        {% if noparams: %}
             <div>You must enter some search criteria!</div>
-        {% elif search_none == True %}
+        {% elif not results: %}
             <div>No results found :(</div>
-        {% else %}
-            {% for student in students %}
-                <div>
-                    <span>First Name: {{ student.first_name }}</span>
-                    </br>
-                    <span>Last Name: {{ student.last_name }}</span>
-                    </br>
-                    <span>Preferred Name: {{ student.alternative_name }}</span>
-                    </br>
-                    <span>OCMR: {{ student.ocmr }}</span>
-                    </br>
-                    <span>T-Number: {{ student.t_number }}</span>
-                </div>
-                </br>
+        {% else: %}
+            {% for result in results: %}
+                {% for field, value in result.items(): %}
+                    <div>{{ field }}: {{ value or 'None listed' }}</div>
+                {% endfor %}
+                <br />
             {% endfor %}
         {% endif %}
     </div>
