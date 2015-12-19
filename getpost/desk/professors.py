@@ -70,7 +70,7 @@ def get_read_write(id):
 @roles_required({'employee', 'administrator'})
 def professors_index():
     if user_session['role'] == 'employee':
-        return redirect('/employee/me/', 303)
+        return redirect('/employees/me/', 303)
     return render_template('professors.html')
 
 @professors_blueprint.route('/me/')
