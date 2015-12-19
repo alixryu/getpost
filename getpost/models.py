@@ -17,16 +17,21 @@ class Package(Base):
     __tablename__ = 'package'
 
     id = Column(Integer, primary_key=True)
+    sender_name = Column(String)
     student_id = Column(Integer, ForeignKey('student.id'))
     arrival_date = Column(DateTime)
     pickup_date = Column(DateTime)
-    received_by = Column(String)
+    received_by = Column(Integer, ForeignKey('employee.id'))
     status = Column(
         Enum('picked_up', 'not_picked_up', name='package_status_type')
     )
 
     student = relationship(
         'Student',
+        lazy='joined'
+        )
+    employee = relationship(
+        'Employee',
         lazy='joined'
         )
     notifications = relationship('Notification')
@@ -118,6 +123,10 @@ class Employee(Base):
     last_name = Column(String)
 
     account = relationship('Account')
+    packages = relationship(
+        'Package',
+        lazy='joined'
+        )
 
     login_attributes = {'first_name', 'last_name'}
 

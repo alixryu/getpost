@@ -1,0 +1,25 @@
+{% extends "parcels.html" %}
+
+{% block subcontent %}
+    <h1>Register Package</h1>
+    <form action="/packages/new" method="POST" class="inputform" id="signupform">
+        <ul class="inputlist">
+            <li id="sender_name">
+                Sender Name:
+                <br />
+                <input type="text" name="sender_name" value="{{ request.form['sender_name'] }}" required />
+            </li>
+            <li id="ocmr">
+                Student OCMR:
+                <br />
+                <input type="text" name="ocmr" pattern="^[0-9]{4}$" value="{{ request.form['ocmr'] }}" required />
+            </li>
+            <li id="arrival_date">
+                Arrival Time :
+                <br />
+                <input type="datetime-local" name="arrival_date" required />
+            </li>
+        </ul>
+        <input type="submit" value="Register Package" />
+    </form>
+{% endblock %}

@@ -2,28 +2,34 @@ from datetime import datetime
 from threading import Thread
 
 from flask import Blueprint, current_app, flash, redirect, render_template
-from flask import url_for
+from flask import url_for, abort, session as user_session
 from flask.ext.mail import Message
 
 from .. import mail
 from ..models import Notification, Package
 from ..orm import Session
+from .prefects import login_required, roles_required
 
 
 owls_blueprint = Blueprint('owls', __name__, url_prefix='/email')
 
 
 @owls_blueprint.route('/')
+@login_required()
 def owls_index():
     return render_template('owls.html')
 
 
 @owls_blueprint.route('/<int:package_id>/', methods=['POST'])
+@login_required()
+@roles_required({'employee', 'administrator'})
 def send_notification(package_id):
     db_session = Session()
 
     package = db_session.query(Package).filter_by(id=package_id).one()
     student = package.student
+
+    sender_name = package.sender_name
 
     notification_count = len(package.notifications) + 1
     email_address = student.account.email_address
@@ -46,16 +52,43 @@ def send_notification(package_id):
         'email/notification',
         package_id=package_id,
         name=first_name,
-        notification_count=notification_count)
+        notification_count=notification_count,
+        sender=sender_name
+        )
 
-    flash('Notification email number ' +
-          str(notification_count)+'has been sent to student.')
+    flash(
+        'Notification email number {} has been sent to student.'.format(
+            notification_count
+            ), 'success'
+        )
     return redirect(url_for('.view_notification', package_id=package_id))
 
 
-@owls_blueprint.route('/package/<int:package_id>/')
+@owls_blueprint.route('/packages/<int:package_id>/')
+@login_required()
+@roles_required({'student', 'employee', 'administrator'})
 def view_notification(package_id):
+    if user_session['role'] == 'student':
+        return redirect(
+            url_for('.view_notification_self', package_id=package_id)
+            )
     db_session = Session()
+    notifications = db_session.query(
+        Notification
+        ).filter_by(package_id=package_id).all()
+    return render_template('owlery.html', notifications=notifications)
+
+
+@owls_blueprint.route('/package/me/<int:package_id>/')
+@login_required()
+@roles_required({'student'})
+def view_notification_self(package_id):
+    db_session = Session()
+    package = db_session.query(
+        Package
+        ).filter_by(id=package_id).one()
+    if user_session['id'] != package.student_id:
+        abort(403)
     notifications = db_session.query(
         Notification
         ).filter_by(package_id=package_id).all()

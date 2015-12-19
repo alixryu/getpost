@@ -49,6 +49,13 @@ def install_error_handlers(app):
             'voldemort.html', status=500, description=desc
         ), 500
 
+    @app.errorhandler(405)
+    def not_found(error):
+        desc = 'This method is not allowed.'
+        return render_template(
+            'voldemort.html', status=405, description=desc
+        ), 405
+
     @app.errorhandler(404)
     def not_found(error):
         desc = 'This page does not exist.'
