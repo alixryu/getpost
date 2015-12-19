@@ -16,7 +16,6 @@ accio_blueprint = Blueprint(
 
 
 def search_user(role, form):
-    print("Role: {}\nForm: {}".format(role, form))
     neg_check = lambda x: x if x >= 1 else 1
     page = neg_check(request.args.get('page', 1, type=int))
 
@@ -69,8 +68,5 @@ def search_user(role, form):
             if 'OCMR number' in result and result['OCMR number'] == '-1':
                 result['OCMR number'] = None
             results.append(result)
-
-        print("Results: {}".format(results))
-        print("Parameters: {}".format(parameters))
 
         return render_template('accio.html', parameters=parameters, role=role, results=results, noparams=noparams, searchpage=searchpage)
