@@ -7,11 +7,7 @@
 {% block content %}
     <h1>Welcome to the Package Management Page.</h1>
         {% for package in packages %}
-            <p>{{ package }}
-            <form action="/email/{{ package.id }}/" method="POST" class="inputform" id="sendemailform">
-            <input type="submit" value="Send Notification Email!" />
-            </form>
-            </p>
+            <p>{{ package }}</p>
         {% endfor %}
     {% block subcontent %}{% endblock %}
 {% endblock %}

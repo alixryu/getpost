@@ -145,7 +145,7 @@ class Student(Base):
     first_name = Column(String)
     last_name = Column(String)
     alternative_name = Column(String)
-    ocmr = Column(String, unique=True)
+    ocmr = Column(String)
     t_number = Column(String)
 
     account = relationship('Account')

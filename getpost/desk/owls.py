@@ -29,6 +29,8 @@ def send_notification(package_id):
     package = db_session.query(Package).filter_by(id=package_id).one()
     student = package.student
 
+    sender_name = package.sender_name
+
     notification_count = len(package.notifications) + 1
     email_address = student.account.email_address
     first_name = student.first_name
@@ -50,7 +52,9 @@ def send_notification(package_id):
         'email/notification',
         package_id=package_id,
         name=first_name,
-        notification_count=notification_count)
+        notification_count=notification_count,
+        sender=sender_name
+        )
 
     flash(
         'Notification email number {} has been sent to student.'.format(
@@ -60,7 +64,7 @@ def send_notification(package_id):
     return redirect(url_for('.view_notification', package_id=package_id))
 
 
-@owls_blueprint.route('/package/<int:package_id>/')
+@owls_blueprint.route('/packages/<int:package_id>/')
 @login_required()
 @roles_required({'student', 'employee', 'administrator'})
 def view_notification(package_id):

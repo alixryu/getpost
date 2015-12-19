@@ -32,11 +32,12 @@ def parcels_view_self():
 
     if user_session['role'] == 'student':
         packages = base_query.filter_by(student_id=account_id).all()
+        return render_template('parcels_for_wizards.html', packages=packages)
     elif user_session['role'] == 'employee':
         packages = base_query.filter_by(received_by=account_id).all()
+        return render_template('parcels.html', packages=packages)
     else:
         abort(404)
-    return render_template('parcels.html', packages=packages)
 
 
 @parcels_blueprint.route('/<int:account_id>/')
