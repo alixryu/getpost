@@ -12,7 +12,7 @@
             <li id="ocmr">
                 Student OCMR:
                 <br />
-                <input type="text" name="ocmr" pattern="[0-9]{4}$" value="{{ request.form['ocmr'] }}" required />
+                <input type="text" name="ocmr" pattern="^[0-9]{4}$" value="{{ request.form['ocmr'] }}" required />
             </li>
             <li id="arrival_date">
                 Arrival Time :

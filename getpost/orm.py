@@ -27,11 +27,35 @@ class DictBase(ReprBase):
             if hasattr(self, column):
                 result[column] = getattr(self, column)
         return result
-        # return {column: getattr(self, column) for column in columns}
 
+class ManagedSession:
+    @staticmethod
+    def registersession(Session):
+        ManagedSession.Session = Session
+
+    def __init__(self, commit, Session=None):
+        if Session is None:
+            self.session = self.__class__.Session()
+        else:
+            self.session = Session()
+        self.commit = commit
+
+    def __enter__(self):
+        return self.session
+
+    def __exit__(self, etype, evalue, etrace):
+        success = all(arg is None for arg in (etype, evalue, etrace))
+        if self.commit:
+            if success:
+                self.session.commit()
+            else:
+                self.session.rollback()
+        return success
 
 Base = declarative_base(cls=DictBase)
 
 engine = create_engine(config.DB_URI)
 session_factory = sessionmaker(bind=engine)
 Session = scoped_session(session_factory)
+
+ManagedSession.registersession(Session)
