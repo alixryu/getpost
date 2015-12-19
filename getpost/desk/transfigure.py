@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, flash, abort, session as user_session
 
 from ..models import Account
-from ..orm import Session, ManagedSession
+from ..orm import ManagedSession
 
 from re import fullmatch
 
@@ -45,7 +45,7 @@ def validate_field(field, value, notify=True, strict=True):
             return ''
 
 def view_user(id, role, read, write, fields):
-    with ManagedSession(Session, False) as db_session:
+    with ManagedSession(False) as db_session:
         account = db_session.query(Account).get(id)
         if not (account and account.role == role):
             abort(404)
@@ -74,7 +74,7 @@ def view_user(id, role, read, write, fields):
 def edit_user(id, role, read, write, form, url=None):
     if url is None:
         url = role + 's'
-    with ManagedSession(Session, True) as db_session:
+    with ManagedSession(True) as db_session:
         account = db_session.query(Account).get(id)
         if account.role != role:
             abort(404)

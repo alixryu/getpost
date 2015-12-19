@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, request,  flash
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from getpost.models import Account, Student
-from getpost.orm import Session, ManagedSession
+from getpost.orm import ManagedSession
 from .prefects import logout_required, form_require
 
 
@@ -25,7 +25,7 @@ def boats_new():
     if tnum[0] == 'T':
         tnum = tnum[1:]
     try:
-        with ManagedSession(Session, True) as db_session:
+        with ManagedSession(True) as db_session:
             account = db_session.query(Account).filter(Account.email_address == email).one()
             if account.verified:
                 flash('An account for {} has already been created'.format(email), 'error')

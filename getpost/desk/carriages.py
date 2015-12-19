@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, request, flash, session 
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from getpost.models import Account
-from getpost.orm import Session, ManagedSession
+from getpost.orm import ManagedSession
 from .prefects import logout_required, form_require, login_required
 
 
@@ -19,7 +19,7 @@ def carriages_index():
 @form_require({'email', 'password'}, methods={'POST'})
 def carriages_in():
     email, password = request.form['email'], request.form['password']
-    with ManagedSession(Session, False) as db_session:
+    with ManagedSession(False) as db_session:
         try:
             account = db_session.query(Account).filter(Account.email_address == email).one()
             if not account.verified:
@@ -42,7 +42,7 @@ def carriages_in():
 @carriages_blueprint.route('/out/')
 @login_required('/auth/')
 def carriages_out():
-    with ManagedSession(Session, False) as db_session:
+    with ManagedSession(False) as db_session:
         account = db_session.query(Account).get(user_session['id'])
         if account:
             account.log_out()

@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, redirect, request, flash, session 
 
 from .prefects import login_required, roles_required, roles_or_match_required, form_require
 from .transfigure import view_user, edit_user
-from getpost.orm import Session, ManagedSession
+from getpost.orm import ManagedSession
 from getpost.models import Account, Student, Employee, Administrator
 
 from re import fullmatch
@@ -122,7 +122,7 @@ def add_student(form):
         first_name, alternative_name is not None, last_name,
         email_address, ocmr, t_number
     )):
-        with ManagedSession(Session, True) as db_session:
+        with ManagedSession(True) as db_session:
             account = Account(
                 email_address=email_address,
                 password=None,
@@ -151,7 +151,7 @@ def add_employee(form):
     last_name = validate_input('last_name', form['lname'])
     email_address = validate_input('email_address', form['email'])
     if all((first_name, last_name, email_address)):
-        with ManagedSession(Session, True) as db_session:
+        with ManagedSession(True) as db_session:
             account = Account(
                 email_address=email_address,
                 password=None,
@@ -178,7 +178,7 @@ def add_admin(form):
     last_name = validate_input('last_name', form['lname'])
     email_address = validate_input('email_address', form['email'])
     if all((first_name, last_name, email_address)):
-        with ManagedSession(Session, True) as db_session:
+        with ManagedSession(True) as db_session:
             account = Account(
                 email_address=email_address,
                 password=None,
