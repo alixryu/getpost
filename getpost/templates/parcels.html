@@ -6,4 +6,8 @@
 
 {% block content %}
     <h1>Welcome to the Package Management Page.</h1>
+        {% for package in packages %}
+            <p>{{ package }}</p>
+        {% endfor %}
+    {% block subcontent %}{% endblock %}
 {% endblock %}
