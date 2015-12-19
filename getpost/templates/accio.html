@@ -34,8 +34,14 @@
         {% else: %}
             {% for result in results: %}
                 {% for field, value in result.items(): %}
-                    <div>{{ field }}: {{ value or 'None listed' }}</div>
+                    {% if field != 'id' %}
+                        <div>{{ field }}: {{ value or 'None listed' }}</div>
+                    {% endif %}
                 {% endfor %}
+                <div><a href="{{ searchpage }}{{ result['id'] }}/">View/edit this account</a></div>
+                {% if role == 'student' %}
+                    <div><a href="/package/{{ result['id'] }}/">Add a package for this user</a></div>
+                {% endif %}
                 <br />
             {% endfor %}
         {% endif %}

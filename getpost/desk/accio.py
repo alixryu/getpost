@@ -65,6 +65,7 @@ def search_user(role, form):
             result.update({object_translations[key]: value for key, value in s_a.as_dict(
                 {'first_name', 'last_name', 'alternative_name', 'ocmr', 't_number'}
             ).items()})
+            result['id'] = s_a.id
             if 'OCMR number' in result and result['OCMR number'] == '-1':
                 result['OCMR number'] = None
             results.append(result)
